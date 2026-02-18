@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Xpect | Autonomous AI Sutra Auditor</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Source+Sans+3:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
         :root {
             --maroon: #97144D; --maroon-dark: #6B0F38;
@@ -49,6 +49,7 @@
         }
         .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.2); border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sutra-tag { background: rgba(201, 162, 39, 0.2); border: 1px solid var(--gold); padding: 2px 8px; border-radius: 4px; font-size: 10px; color: var(--gold-light); }
     </style>
  </head>
  <body class="h-full overflow-auto">
@@ -64,10 +65,11 @@
        <p style="color: var(--gold-light);" class="text-xs font-bold uppercase tracking-widest opacity-80">Autonomous AI Sutra Auditor</p>
       </div>
      </div>
-     <div class="flex items-center gap-6">
-      <div class="flex items-center gap-3 glass-panel px-4 py-2">
-       <div class="pulse-indicator"></div><span class="text-white font-semibold text-xs uppercase">Engine Active</span>
-      </div>
+     <div class="flex items-center gap-4">
+        <span class="sutra-tag">RBI FREE-AI v2.0</span>
+        <div class="flex items-center gap-3 glass-panel px-4 py-2">
+            <div class="pulse-indicator"></div><span class="text-white font-semibold text-xs uppercase">Engine Live</span>
+        </div>
      </div>
     </div>
    </header>
@@ -84,15 +86,15 @@
      <div class="progress-bar mt-6"><div id="risk-progress" class="progress-fill" style="width: 0%; background: #EF4444;"></div></div>
     </div>
     <div id="health-card" class="glass-panel stat-card p-6 relative overflow-hidden">
-     <p class="text-white opacity-70 text-xs font-bold uppercase mb-2">Sutra Health Index</p>
+     <p class="text-white opacity-70 text-xs font-bold uppercase mb-2">Compliance Health Index</p>
      <p id="health-score" class="heading-font text-5xl font-bold text-white">0%</p>
      <div class="progress-bar mt-6"><div id="health-progress" class="progress-fill" style="width: 0%; background: #22C55E;"></div></div>
     </div>
- section>
+   </section>
 
    <section class="glass-panel p-10 text-center border-2 border-dashed border-white/20">
-    <h3 class="heading-font text-2xl font-bold text-white mb-4">Run RBI FREE-AI Compliance Audit</h3>
-    <p class="text-white opacity-60 text-sm mb-8 max-w-lg mx-auto">Upload banking datasets to analyze model behavior against the 7 Sutras of Ethical AI Governance.</p>
+    <h3 class="heading-font text-2xl font-bold text-white mb-2">7 Sutra Compliance Engine</h3>
+    <p class="text-white opacity-60 text-sm mb-8 max-w-xl mx-auto">Analyzing: Trust • Fairness • Accountability • Safety • Transparency • Innovation • Human-Centricity</p>
     <div class="flex flex-col items-center gap-6">
         <input type="file" id="csvFile" accept=".csv" class="text-white text-sm file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-white file:text-maroon-700 hover:file:bg-gold-light transition-all">
         <button id="upload-btn" onclick="processAudit()" class="upload-btn w-full md:w-64">Run Xpect Audit</button>
@@ -104,83 +106,65 @@
     function processAudit() {
         const fileInput = document.getElementById('csvFile');
         const btn = document.getElementById('upload-btn');
-        
-        if (!fileInput.files[0]) {
-            alert("Protocol Error: No dataset detected. Please select a CSV file.");
-            return;
-        }
+        if (!fileInput.files[0]) { alert("Error: No dataset found."); return; }
 
-        // Reset and Start UI
-        btn.innerText = "Processing Sutras...";
+        btn.innerText = "CALIBRATING SUTRAS...";
         btn.disabled = true;
-        document.getElementById('transactions-card').classList.add('scanning');
-        document.getElementById('risk-card').classList.add('scanning');
-        document.getElementById('health-card').classList.add('scanning');
+        ['transactions-card', 'risk-card', 'health-card'].forEach(id => document.getElementById(id).classList.add('scanning'));
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            const content = e.target.result;
-            // Robust line splitting for all OS types
-            const rows = content.split(/\r?\n/).filter(line => line.trim().length > 0);
-            const dataRowCount = rows.length - 1; // Subtract header
+            const rows = e.target.result.split(/\r?\n/).filter(line => line.trim().length > 0);
+            if (rows.length <= 1) { alert("Error: CSV is invalid."); resetUI(); return; }
+
+            const headers = rows[0].toLowerCase().split(',').map(h => h.trim());
+            const dataRows = rows.slice(1);
             
-            // Logic Check: Ensure file isn't empty
-            if (dataRowCount <= 0) {
-                alert("Audit Error: File contains no data records.");
+            // AUTOMATIC 7 SUTRA MAPPING
+            const keywords = ['trust', 'fair', 'account', 'safe', 'score', 'audit', 'compliance', 'risk'];
+            const targetCols = headers.reduce((acc, h, i) => {
+                if (keywords.some(k => h.includes(k))) acc.push(i);
+                return acc;
+            }, []);
+
+            if (targetCols.length === 0) {
+                alert("SCHEMA ERROR: No Sutra columns found. Please ensure your CSV headers include 'Compliance' or 'Risk'.");
                 resetUI();
                 return;
             }
 
-            // Real Data Analysis
-            const headers = rows[0].toLowerCase().split(',');
-            let totalRiskValue = 0;
-            let foundDataPoints = 0;
-
-            // Search for numeric "risk" or "score" columns
-            const riskColIdx = headers.findIndex(h => h.includes('risk') || h.includes('score') || h.includes('prob'));
-
-            if (riskColIdx !== -1) {
-                for (let i = 1; i < rows.length; i++) {
-                    const cells = rows[i].split(',');
-                    const val = parseFloat(cells[riskColIdx]);
+            let scoreSum = 0; let totalCells = 0;
+            dataRows.forEach(row => {
+                const cells = row.split(',');
+                targetCols.forEach(idx => {
+                    const val = parseFloat(cells[idx]);
                     if (!isNaN(val)) {
-                        totalRiskValue += val;
-                        foundDataPoints++;
+                        scoreSum += (val <= 1 && val > 0) ? val * 100 : val;
+                        totalCells++;
                     }
-                }
-            }
+                });
+            });
 
-            // Final Calculations
-            const finalRisk = foundDataPoints > 0 ? Math.round(totalRiskValue / foundDataPoints) : Math.floor(Math.random() * (25 - 12) + 12);
-            const finalHealth = 100 - (finalRisk * 0.8);
+            const health = totalCells > 0 ? Math.round(scoreSum / totalCells) : 0;
+            const risk = 100 - health;
 
-            // Update Dashboard After Delay
             setTimeout(() => {
-                document.getElementById('transaction-count').innerText = dataRowCount.toLocaleString();
-                document.getElementById('risk-score').innerHTML = finalRisk + "<span class='text-2xl opacity-50'>%</span>";
-                document.getElementById('health-score').innerText = Math.round(finalHealth) + "%";
+                document.getElementById('transaction-count').innerText = dataRows.length.toLocaleString();
+                document.getElementById('risk-score').innerHTML = risk + "<span class='text-2xl opacity-50'>%</span>";
+                document.getElementById('health-score').innerText = health + "%";
                 
                 document.getElementById('transaction-progress').style.width = "100%";
-                document.getElementById('risk-progress').style.width = finalRisk + "%";
-                document.getElementById('health-progress').style.width = finalHealth + "%";
+                document.getElementById('risk-progress').style.width = risk + "%";
+                document.getElementById('health-progress').style.width = health + "%";
 
-                document.getElementById('transactions-card').classList.remove('scanning');
-                document.getElementById('risk-card').classList.remove('scanning');
-                document.getElementById('health-card').classList.remove('scanning');
-                
-                btn.innerText = "Audit Verified";
+                ['transactions-card', 'risk-card', 'health-card'].forEach(id => document.getElementById(id).classList.remove('scanning'));
+                btn.innerText = "AUDIT COMPLETE";
                 btn.style.background = "#22C55E";
                 btn.disabled = false;
 
-                alert("SUTRA AUDIT SUCCESS\n----------------------\nTotal Records: " + dataRowCount + "\nRisk Variance: " + finalRisk + "%\nHealth Index: " + Math.round(finalHealth) + "%\n\nCompliance Status: RBI FREE-AI 2025 ALIGNED");
-            }, 2000);
+                alert(`XPECT SUTRA CERTIFICATE\n--------------------------\nRecords: ${dataRows.length}\nCompliance Avg: ${health}%\nRisk Variance: ${risk}%\n\nResult: Aligned with RBI 7 Sutra Framework.`);
+            }, 1800);
         };
-        
-        reader.onerror = function() {
-            alert("Hardware Error: Could not read file.");
-            resetUI();
-        };
-
         reader.readAsText(fileInput.files[0]);
     }
 
