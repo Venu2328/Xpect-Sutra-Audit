@@ -43,11 +43,15 @@
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* Hover Back Glow & Polish */
         .glass-card:hover {
             transform: translateY(-8px);
             border-color: var(--crimson);
             box-shadow: 0 20px 40px rgba(151, 20, 77, 0.1);
         }
+
+        nav span { cursor: pointer; transition: all 0.3s ease; }
+        nav span:hover { color: var(--crimson); text-shadow: 0 0 15px rgba(151, 20, 77, 0.3); }
 
         .btn-elite {
             background: var(--crimson);
@@ -70,15 +74,10 @@
         .scanner-line {
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--crimson), transparent);
-            position: absolute;
-            width: 100%; top: 0; opacity: 0;
+            position: absolute; width: 100%; top: 0; opacity: 0;
         }
 
-        .is-scanning .scanner-line {
-            animation: scan 2s linear infinite;
-            opacity: 1;
-        }
-
+        .is-scanning .scanner-line { animation: scan 2s linear infinite; opacity: 1; }
         @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
         
         #log-entries div { animation: fadeIn 0.5s ease forwards; }
@@ -94,9 +93,7 @@
                 <span class="text-2xl font-black tracking-tighter serif-font italic">XPECT</span>
             </div>
             <div class="hidden md:flex gap-10 text-[10px] font-bold tracking-[0.2em] uppercase opacity-60">
-                <span class="hover:text-[#97144D] cursor-pointer transition">Philosophy</span>
-                <span class="hover:text-[#97144D] cursor-pointer transition">Vault</span>
-                <span class="hover:text-[#97144D] cursor-pointer transition">Infrastructure</span>
+                <span>Philosophy</span><span>Vault</span><span>Infrastructure</span>
             </div>
             <div class="h-8 w-8 flex flex-col justify-center gap-1.5 cursor-pointer group">
                 <div class="h-[2px] w-full bg-[#97144D]"></div>
@@ -144,11 +141,10 @@
                     </span>
                     Live Audit Stream
                 </h4>
-                <div id="log-entries" class="text-[12px] font-mono opacity-60 space-y-3 max-h-60 overflow-y-auto leading-relaxed">
-                </div>
+                <div id="log-entries" class="text-[12px] font-mono opacity-60 space-y-3 max-h-60 overflow-y-auto leading-relaxed"></div>
             </div>
             
-            <div id="results-display" class="hidden text-left glass-card p-10 border-l-4 border-[#97144D] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div id="results-display" class="hidden text-left glass-card p-10 border-l-4 border-[#97144D]">
                 <h3 class="text-xs font-black uppercase text-[#97144D] mb-4 tracking-widest">Linguistic Authority Verdict</h3>
                 <div id="ai-verdict-text" class="text-xl italic serif-font text-black/80 leading-relaxed">Analyzing structural integrity...</div>
             </div>
@@ -169,13 +165,12 @@
             const logContainer = document.getElementById('log-entries');
             document.getElementById('agent-log').classList.remove('hidden');
             logContainer.innerHTML = ''; 
-
             for (const step of auditSteps) {
                 const entry = document.createElement('div');
                 entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
                 logContainer.appendChild(entry);
                 logContainer.scrollTop = logContainer.scrollHeight;
-                await new Promise(resolve => setTimeout(resolve, 700)); 
+                await new Promise(r => setTimeout(r, 700)); 
             }
         }
 
@@ -184,32 +179,22 @@
             const btn = document.getElementById('upload-btn');
             const display = document.getElementById('results-display');
             const logSection = document.getElementById('agent-log');
-            
-            if (!fileInput.files[0]) {
-                alert("Institutional Access Denied: Please select a valid CSV dataset.");
-                return;
-            }
+            if (!fileInput.files[0]) return;
 
-            // UI Reset
             display.classList.add('hidden');
             logSection.classList.add('hidden');
             btn.innerText = "ENGINEERING RESULTS...";
             btn.disabled = true;
             document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
 
-            // Start Simulated Logs (Non-blocking)
             const logPromise = runLiveLogs();
-
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
             try {
                 const response = await fetch('http://127.0.0.1:8000/audit', { method: 'POST', body: formData });
                 const data = await response.json();
-
-                // Wait for the visual "thinking" to complete for UX impact
                 await logPromise;
-
                 if (data.status === "success") {
                     document.getElementById('transaction-count').innerText = data.transaction_count.toLocaleString();
                     document.getElementById('risk-score').innerText = data.risk_score;
@@ -217,9 +202,8 @@
                     document.getElementById('ai-verdict-text').innerText = data.summary;
                     display.classList.remove('hidden');
                 }
-            } catch (e) { 
-                alert("Protocol Error: Backend is offline. Ensure Python server is running on port 8000."); 
-            } finally {
+            } catch (e) { alert("Protocol Error: Backend offline."); }
+            finally {
                 btn.innerText = "PROTOCOL SEALED";
                 btn.disabled = false;
                 document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning'));
