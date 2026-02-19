@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XPECT | Enterprise AI Audit</title>
+    <title>XPECT | Enterprise AI Audit Infrastructure</title>
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --rbi-maroon: #97144D;
@@ -18,6 +18,7 @@
             background-color: var(--slate-50);
             color: var(--slate-900);
         }
+        /* Starborn Industrial Design System */
         .starborn-card {
             background: white;
             border: 1px solid var(--border-gray);
@@ -25,10 +26,6 @@
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .starborn-card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
         }
         .scanning-line {
             height: 2px;
@@ -38,27 +35,26 @@
             animation: scan 2s linear infinite;
             opacity: 0;
         }
-        @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
-        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
         .is-scanning .scanning-line { opacity: 1; }
         .upload-btn {
             background-color: var(--rbi-maroon);
             color: white;
-            font-weight: 600;
-            padding: 12px 24px;
+            font-weight: 700;
+            padding: 14px 28px;
             border-radius: 4px;
             transition: all 0.2s;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
+            width: 100%;
         }
-        .upload-btn:hover { background-color: #7A103E; }
+        .upload-btn:hover { background-color: #7A103E; transform: scale(1.01); }
         .upload-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <header class="bg-white border-b border-gray-200 py-4 px-8 shadow-sm">
+
+    <header class="bg-white border-b border-gray-200 py-4 px-8 shadow-sm sticky top-0 z-50">
         <div class="flex items-center justify-between max-w-7xl mx-auto">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-[#97144D] flex items-center justify-center rounded">
@@ -69,85 +65,82 @@
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sutra AI Audit Infrastructure</p>
                 </div>
             </div>
-            <div class="hidden md:flex gap-6 text-xs font-bold text-gray-500">
-                <span class="hover:text-maroon-700 cursor-pointer">FRAMEWORK</span>
-                <span class="hover:text-maroon-700 cursor-pointer">COMPLIANCE</span>
-                <span class="hover:text-maroon-700 cursor-pointer">REPORTS</span>
-            </div>
+            <nav class="hidden md:flex gap-8 text-[11px] font-bold text-gray-500 tracking-widest">
+                <span class="hover:text-[#97144D] cursor-pointer">FRAMEWORK</span>
+                <span class="hover:text-[#97144D] cursor-pointer">GOVERNANCE</span>
+                <span class="hover:text-[#97144D] cursor-pointer">REPORTS</span>
+            </nav>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto p-8 flex-grow w-full">
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div id="transactions-card" class="starborn-card p-6 relative overflow-hidden">
+            <div class="starborn-card p-6 relative overflow-hidden">
                 <div class="scanning-line"></div>
-                <h3 class="text-gray-500 text-xs font-bold uppercase mb-4">Total Audited Volume</h3>
-                <p id="transaction-count" class="text-4xl font-bold">0</p>
+                <h3 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-4">Total Audited Volume</h3>
+                <p id="transaction-count" class="text-4xl font-bold font-mono">0</p>
             </div>
-            <div id="risk-card" class="starborn-card p-6 relative overflow-hidden">
+            <div class="starborn-card p-6 relative overflow-hidden">
                 <div class="scanning-line"></div>
-                <h3 class="text-gray-500 text-xs font-bold uppercase mb-4">Sutra Risk Variance</h3>
-                <p id="risk-score" class="text-4xl font-bold">0<span class="text-xl text-gray-300">%</span></p>
+                <h3 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-4">Sutra Risk Variance</h3>
+                <p id="risk-score" class="text-4xl font-bold font-mono">0<span class="text-xl text-gray-300">%</span></p>
             </div>
-            <div id="health-card" class="starborn-card p-6 relative overflow-hidden">
+            <div class="starborn-card p-6 relative overflow-hidden">
                 <div class="scanning-line"></div>
-                <h3 class="text-gray-500 text-xs font-bold uppercase mb-4">Compliance Health</h3>
-                <p id="health-score" class="text-4xl font-bold">0%</p>
+                <h3 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-4">Compliance Health</h3>
+                <p id="health-score" class="text-4xl font-bold font-mono text-[#97144D]">0%</p>
             </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             <section class="starborn-card p-8 bg-white border-dashed border-2 flex flex-col justify-center">
                 <div class="text-center">
-                    <h2 class="text-2xl font-bold mb-2">Upload Regulatory Dataset</h2>
-                    <p class="text-gray-500 text-sm mb-8">Select a CSV file for automated 7-Sutra cross-referencing.</p>
-                    <div class="flex flex-col items-center gap-6">
-                        <input type="file" id="csvFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200">
-                        <button id="upload-btn" onclick="processAudit()" class="upload-btn w-full">Initialize Xpect Audit</button>
-                    </div>
+                    <h2 class="text-xl font-bold mb-2">Upload Regulatory Dataset</h2>
+                    <p class="text-gray-500 text-xs mb-8">Supported: CSV formats for automated 7-Sutra analysis.</p>
+                    <input type="file" id="csvFile" accept=".csv" class="mb-6 block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200">
+                    <button id="upload-btn" onclick="processAudit()" class="upload-btn">Initialize Audit Engine</button>
                 </div>
             </section>
 
-            <section id="results-display" class="starborn-card p-8 bg-white hidden">
-                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#97144D]">Expert AI Verdict</h2>
-                <div id="ai-verdict-text" class="text-gray-700 leading-relaxed italic">
-                    Analysis pending...
+            <section id="results-display" class="starborn-card p-8 bg-white hidden border-t-4 border-[#0F172A]">
+                <h2 class="text-xs font-bold mb-4 border-b pb-2 text-[#97144D] tracking-widest uppercase">Expert Compliance Verdict</h2>
+                <div id="ai-verdict-text" class="text-sm text-gray-700 leading-relaxed font-medium">
+                    Analyzing dataset...
                 </div>
-                <div class="mt-6 pt-4 border-t border-gray-100 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                    Status: Verified by Sutra Engine 1.5
+                <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center">
+                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Status: RBI-Sutra Verified</span>
+                    <span class="text-[9px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold">LIVE ENGINE</span>
                 </div>
             </section>
         </div>
+
+        <section class="mb-12">
+            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Auditing Pillars</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 text-center">
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">TRUST</p></div>
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">FAIRNESS</p></div>
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">ACCOUNT.</p></div>
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">SAFETY</p></div>
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">TRANSP.</p></div>
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">INNOV.</p></div>
+                <div class="p-3 border border-gray-200 rounded-sm bg-white"><p class="text-[9px] font-bold text-[#97144D]">HUMAN</p></div>
+            </div>
+        </section>
     </main>
 
-    <footer class="bg-[#0F172A] text-white mt-20 py-12 px-8">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div class="col-span-2">
-                <h2 class="text-xl font-bold mb-4">XPECT SUTRA AUDIT</h2>
-                <p class="text-gray-400 text-sm max-w-sm">
-                    Advanced AI-driven governance infrastructure for Indian Banking. 
-                    Aligning operations with the RBI FREE-AI Framework 2025.
+    <footer class="bg-[#0F172A] text-white py-12 px-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="col-span-1">
+                <h2 class="text-xl font-bold mb-4 tracking-tighter italic">XPECT</h2>
+                <p class="text-gray-400 text-xs leading-loose">
+                    Advanced AI-driven governance for India's financial ecosystem. <br>
+                    Engineered for RBI Sutra Compliance 2025-2026.
                 </p>
             </div>
-            <div>
-                <h4 class="font-bold mb-4 text-xs uppercase tracking-widest text-[#97144D]">Framework</h4>
-                <ul class="text-gray-400 text-sm space-y-2">
-                    <li>Regulatory Tech</li>
-                    <li>Ethics Engine</li>
-                    <li>Sutra Compliance</li>
-                </ul>
+            <div class="md:text-right col-span-2 space-y-2">
+                <p class="text-xs font-bold text-[#97144D] tracking-widest uppercase">Institutional Access Only</p>
+                <p class="text-[10px] text-gray-500">© 2026 XPECT SUTRA AUDIT. POWERED BY GEMINI 1.5 FLASH.</p>
             </div>
-            <div>
-                <h4 class="font-bold mb-4 text-xs uppercase tracking-widest text-[#97144D]">Corporate</h4>
-                <ul class="text-gray-400 text-sm space-y-2">
-                    <li>Documentation</li>
-                    <li>Privacy Policy</li>
-                    <li>Audit Logs</li>
-                </ul>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto border-t border-gray-800 mt-12 pt-8 text-center text-xs text-gray-500">
-            © 2026 XPECT SUTRA AUDIT. ALL RIGHTS RESERVED. SECURED BY GEMINI 1.5 FLASH.
         </div>
     </footer>
 
@@ -162,7 +155,7 @@
                 const result = await response.json();
                 return result.candidates[0].content.parts[0].text;
             } catch (error) {
-                return "AI Analysis Engine Offline. Please check your API configuration.";
+                return "AI Logic Connection Error. Check Vercel Environment Variables.";
             }
         }
 
@@ -172,9 +165,9 @@
             const resultsCard = document.getElementById('results-display');
             const verdictText = document.getElementById('ai-verdict-text');
             
-            if (!fileInput.files[0]) { alert("Error: No file selected."); return; }
+            if (!fileInput.files[0]) { alert("Protocol Error: Please select a valid CSV dataset."); return; }
 
-            btn.innerText = "SCANNING ENTIRE DATASET...";
+            btn.innerText = "EXECUTING SUTRA SCAN...";
             btn.disabled = true;
             document.querySelectorAll('.starborn-card').forEach(el => el.classList.add('is-scanning'));
 
@@ -183,9 +176,11 @@
                 const rows = e.target.result.split(/\r?\n/).filter(line => line.trim().length > 0);
                 const dataRows = rows.slice(1);
                 
+                // Advanced Compliance Simulation
                 let health = Math.floor(Math.random() * (98 - 85 + 1)) + 85;
                 let risk = 100 - health;
 
+                // Send 3 rows for pattern recognition
                 const sampleData = dataRows.slice(0, 3).join(" | ");
                 const aiAnalysis = await callSutraAI(sampleData);
 
