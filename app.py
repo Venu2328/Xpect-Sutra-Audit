@@ -18,34 +18,43 @@ def audit_transactions():
         raw_content = file.stream.read().decode("UTF-8", errors='replace')
         df = pd.read_csv(io.StringIO(raw_content))
         
-        # 2. Transparency Mode: Track and Mask PII
-        # This aligns with the "Safety & Trust" Sutras
+        # 2. Sutra Masking logic
         masked_features = []
         pii_keywords = ['name', 'phone', 'email', 'pan', 'acc', 'aadhar', 'id', 'customer']
-        
         for col in df.columns:
             if any(key in col.lower() for key in pii_keywords):
-                # Apply SHA-256 masking
                 df[col] = df[col].apply(lambda x: hashlib.sha256(str(x).encode()).hexdigest()[:12])
                 masked_features.append(col)
 
-        # 3. Audit Metrics
+        # 3. ADVANCED STRESS TEST (The "Brain" update)
+        # We calculate health based on actual data patterns now
         count = len(df)
-        # Mock logic for Sutra Health: Deduct points if too many PII leaks were found
-        health_base = 99.8
-        health_score = health_base if not masked_features else health_base - 0.5
-        risk_variance = round(100 - health_score, 2)
+        risk_deductions = 0
+        
+        # Check for potential duplicates (High risk in banking)
+        if df.duplicated().any():
+            risk_deductions += 5
+            
+        # Check for "Transaction Spikes" if an 'Amount' column exists
+        amount_col = next((c for c in df.columns if 'amount' in c.lower() or 'val' in c.lower()), None)
+        if amount_col:
+            # If any transaction is 5x the average, it's a risk variance
+            avg_val = df[amount_col].mean()
+            if (df[amount_col] > (avg_val * 5)).any():
+                risk_deductions += 7
+
+        health_val = max(75, 99.8 - risk_deductions)
+        risk_val = round(100 - health_val, 2)
         
         return jsonify({
             "status": "success",
             "transaction_count": count,
-            "health_score": f"{health_score}%",
-            "risk_score": f"{risk_variance}%",
+            "health_score": f"{health_val}%",
+            "risk_score": f"{risk_val}%",
             "masked_features": masked_features,
-            "summary": f"Sutra Protocol Verified. {count} nodes audited. Identity protection applied to: {', '.join(masked_features) if masked_features else 'None'}."
+            "summary": f"Sutra Audit Complete. Detected {len(masked_features)} sensitive nodes. Risk variance identified in structural patterns: {risk_val}%."
         })
         
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
-# Vercel handles the app object directly; no app.run() needed.
+        
