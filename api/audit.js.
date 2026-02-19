@@ -6,11 +6,14 @@ export default async function handler(req, res) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: `You are the Xpect AI Auditor. Audit this data against the RBI 7 Sutras (Trust, Fairness, Accountability, Safety, Transparency, Innovation, Human-Centricity). Briefly explain if it's compliant: ${rowData}` }] }]
+      contents: [{ 
+        parts: [{ 
+          text: `You are a Senior RBI Compliance Officer. Audit this bank record specifically against the 7 Sutras (Trust, Fairness, Accountability, Safety, Transparency, Innovation, Human-Centricity). Data: ${rowData}. Provide a 2-sentence expert verdict.` 
+        }] 
+      }]
     })
   });
 
   const data = await response.json();
   res.status(200).json(data);
 }
-
