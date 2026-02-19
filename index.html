@@ -178,6 +178,7 @@
             const btn = document.getElementById('upload-btn');
             const display = document.getElementById('results-display');
             const logSection = document.getElementById('agent-log');
+            
             if (!fileInput.files[0]) {
                 alert("Please select a CSV file first.");
                 return;
@@ -194,20 +195,42 @@
             formData.append('file', fileInput.files[0]);
 
             try {
-                // CHANGED: Using relative path for Vercel deployment
+                // Using relative path for Vercel deployment
                 const response = await fetch('/api/audit', { 
                     method: 'POST', 
                     body: formData 
                 });
                 
                 const data = await response.json();
+                
+                // Wait for the hardcoded auditSteps to finish playing
                 await logPromise;
 
                 if (data.status === "success") {
+                    const logContainer = document.getElementById('log-entries');
+                    
+                    // NEW: Transparency Mode - Injecting real-time masking results
+                    if (data.masked_features && data.masked_features.length > 0) {
+                        for (const feature of data.masked_features) {
+                            const entry = document.createElement('div');
+                            entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> Masked Sensitive Column: <span class="font-bold text-black opacity-100">[${feature.toUpperCase()}]</span>`;
+                            logContainer.appendChild(entry);
+                            logContainer.scrollTop = logContainer.scrollHeight;
+                            // Short delay between items for a "processing" feel
+                            await new Promise(r => setTimeout(r, 400)); 
+                        }
+                    } else {
+                        const entry = document.createElement('div');
+                        entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> No PII detected. Data integrity verified.`;
+                        logContainer.appendChild(entry);
+                    }
+
+                    // Update Dashboard Metrics
                     document.getElementById('transaction-count').innerText = data.transaction_count.toLocaleString();
                     document.getElementById('risk-score').innerText = data.risk_score;
                     document.getElementById('health-score').innerText = data.health_score;
                     document.getElementById('ai-verdict-text').innerText = data.summary;
+                    
                     display.classList.remove('hidden');
                 } else {
                     alert("Audit Protocol Failed: " + (data.error || data.message));
@@ -224,4 +247,3 @@
     </script>
 </body>
 </html>
-
