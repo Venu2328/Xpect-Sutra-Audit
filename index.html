@@ -43,7 +43,6 @@
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Hover Back Glow & Polish */
         .glass-card:hover {
             transform: translateY(-8px);
             border-color: var(--crimson);
@@ -179,7 +178,10 @@
             const btn = document.getElementById('upload-btn');
             const display = document.getElementById('results-display');
             const logSection = document.getElementById('agent-log');
-            if (!fileInput.files[0]) return;
+            if (!fileInput.files[0]) {
+                alert("Please select a CSV file first.");
+                return;
+            }
 
             display.classList.add('hidden');
             logSection.classList.add('hidden');
@@ -192,18 +194,28 @@
             formData.append('file', fileInput.files[0]);
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/audit', { method: 'POST', body: formData });
+                // CHANGED: Using relative path for Vercel deployment
+                const response = await fetch('/api/audit', { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
                 const data = await response.json();
                 await logPromise;
+
                 if (data.status === "success") {
                     document.getElementById('transaction-count').innerText = data.transaction_count.toLocaleString();
                     document.getElementById('risk-score').innerText = data.risk_score;
                     document.getElementById('health-score').innerText = data.health_score;
                     document.getElementById('ai-verdict-text').innerText = data.summary;
                     display.classList.remove('hidden');
+                } else {
+                    alert("Audit Protocol Failed: " + (data.error || data.message));
                 }
-            } catch (e) { alert("Protocol Error: Backend offline."); }
-            finally {
+            } catch (e) { 
+                console.error(e);
+                alert("Protocol Error: Connection to Sovereign Vault timed out."); 
+            } finally {
                 btn.innerText = "PROTOCOL SEALED";
                 btn.disabled = false;
                 document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning'));
@@ -212,3 +224,4 @@
     </script>
 </body>
 </html>
+
