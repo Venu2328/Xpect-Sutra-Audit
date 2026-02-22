@@ -24,7 +24,7 @@ async function runLiveLogs() {
 
 function formatPercent(val) {
     if (!val) return "0%";
-    return val;
+    return String(val).includes("%") ? val : val + "%";
 }
 
 async function processAudit() {
@@ -63,6 +63,7 @@ async function processAudit() {
         if (!response.ok) throw new Error("API unreachable");
 
         const data = await response.json();
+        console.log("AUDIT RESPONSE →", data);
 
         await logPromise;
 
@@ -70,26 +71,40 @@ async function processAudit() {
             throw new Error(data.message || data.error || "Unknown audit failure");
         }
 
-        // ✅ FIELD ALIGNMENT WITH NEW BACKEND
+        // ✅ UNIVERSAL DATA MAPPER (old + new backend compatible)
+
+        const summary = data.summary || data;
+
+        const auditedCapacity =
+            summary.audited_capacity ?? data.audited_capacity ?? 0;
+
+        const riskVariance =
+            summary.risk_variance ?? data.risk_score ?? 0;
+
+        const sutraHealth =
+            summary.sutra_health ?? data.sutra_health ?? 0;
+
+        const verdict =
+            data.verdict ?? data.summary ?? "No linguistic verdict generated.";
+
+        // ✅ UI BINDING
 
         document.getElementById('transaction-count').innerText =
-            formatPercent(data.audited_capacity);
+            formatPercent(auditedCapacity);
 
         document.getElementById('risk-score').innerText =
-            formatPercent(data.risk_score);
+            formatPercent(riskVariance);
 
         document.getElementById('health-score').innerText =
-            formatPercent(data.sutra_health);
+            formatPercent(sutraHealth);
 
-        document.getElementById('ai-verdict-text').innerText =
-            data.summary || "No linguistic verdict generated.";
+        document.getElementById('ai-verdict-text').innerText = verdict;
 
         display.classList.remove('hidden');
 
     } catch (err) {
 
-        console.error(err);
-
+        console.error("AUDIT FAILURE →", err);
         alert("Protocol Error: " + err.message);
 
     } finally {
