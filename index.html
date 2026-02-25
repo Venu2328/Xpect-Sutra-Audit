@@ -3,197 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUTRA | Sovereign AI Governance</title>
+    <title>STARBORN | Sovereign Neural Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #97144D;
+            --accent: #ff4b2b;
+            --bg: #030303;
+        }
+
         body {
             font-family: 'Space+Grotesk', sans-serif;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            color: #fff;
+            background-color: var(--bg);
+            color: #ffffff;
+            overflow-x: hidden;
             min-height: 100vh;
         }
 
+        /* Moving Particle Background */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Floating Logo Animation */
+        .floating-logo {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        /* Glassmorphism & Shining Lights */
         .glass-card {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(151, 20, 77, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            transition: 0.5s;
         }
 
         .is-scanning {
-            border-color: #97144D;
-            box-shadow: 0 0 20px rgba(151, 20, 77, 0.3);
-            animation: pulse 2s infinite;
+            border-color: var(--primary);
+            box-shadow: 0 0 50px rgba(151, 20, 77, 0.3);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+        /* Text Gradients */
+        .shimmer-text {
+            background: linear-gradient(90deg, #fff 0%, var(--primary) 50%, #fff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
         }
 
-        .custom-button {
-            background: linear-gradient(90deg, #97144D 0%, #ff4b2b 100%);
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        .btn-premium {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            box-shadow: 0 4px 15px rgba(151, 20, 77, 0.4);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
-        .custom-button:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 15px rgba(151, 20, 77, 0.5);
+        .btn-premium:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(151, 20, 77, 0.6);
         }
 
-        #log-entries {
-            scrollbar-width: thin;
-            scrollbar-color: #97144D transparent;
+        /* Log Stream Styling */
+        #log-entries div {
+            border-left: 2px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 8px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div class="max-w-4xl mx-auto">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-2">SUTRA <span class="text-[#97144D]">VAULT</span></h1>
-            <p class="text-gray-400 uppercase tracking-[0.2em] text-sm">Institutional AI Audit Protocol</p>
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="max-w-7xl mx-auto px-6 py-10 relative">
+        <header class="text-center mb-16 floating-logo">
+            <div class="inline-block mb-6">
+                <div class="w-16 h-16 bg-gradient-to-tr from-[#97144D] to-[#ff4b2b] rounded-2xl rotate-45 flex items-center justify-center shadow-2xl">
+                    <span class="text-white -rotate-45 font-bold text-2xl">S</span>
+                </div>
+            </div>
+            <h1 class="text-7xl md:text-9xl font-bold tracking-tighter shimmer-text">STARBORN</h1>
+            <p class="text-gray-500 tracking-[0.6em] text-[10px] uppercase mt-4">Sovereign Neural Governance</p>
         </header>
 
-        <main class="grid gap-8">
-            
-            <section class="glass-card p-8 text-center">
-                <div class="mb-6">
-                    <label for="csvFile" class="block text-gray-400 mb-4">DEPOSIT LEDGER FOR NEURAL SCRUBBING</label>
-                    <input type="file" id="csvFile" accept=".csv" 
-                           class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#97144D] file:text-white hover:file:bg-[#7a103e] cursor-pointer">
-                </div>
-                <button onclick="processAudit()" id="upload-btn" class="custom-button w-full py-4 rounded-xl font-bold text-lg uppercase tracking-widest">
-                    Initialize Protocol
-                </button>
-            </section>
-
-            <section id="agent-log" class="glass-card p-6 hidden">
-                <h3 class="text-xs font-bold text-[#97144D] mb-4 tracking-widest uppercase">Live Audit Stream</h3>
-                <div id="log-entries" class="h-40 overflow-y-auto space-y-2 text-sm font-mono text-gray-300">
+        <div class="grid lg:grid-cols-12 gap-10">
+            <div class="lg:col-span-5 space-y-8">
+                <section class="glass-card p-10 border-t border-white/20">
+                    <h3 class="text-[10px] font-bold tracking-[0.4em] text-gray-400 mb-8 uppercase italic">Secure Ledger Deposit</h3>
+                    
+                    <div class="relative mb-8">
+                        <input type="file" id="csvFile" accept=".csv" class="hidden">
+                        <label for="csvFile" class="flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-3xl p-12 cursor-pointer hover:bg-white/5 transition-all group">
+                            <span class="text-gray-500 group-hover:text-[#97144D] transition-colors uppercase text-xs tracking-widest">Select CSV Vector</span>
+                        </label>
                     </div>
-            </section>
 
-            <section id="results-display" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
-                
-                <div class="glass-card p-6 text-center">
-                    <h4 class="text-gray-500 text-xs mb-2">SUTRA HEALTH</h4>
-                    <p id="health-score" class="text-3xl font-bold text-green-400">--</p>
-                </div>
+                    <button onclick="processAudit()" id="upload-btn" class="btn-premium w-full py-6 rounded-2xl font-bold uppercase tracking-[0.3em] text-xs">
+                        Initiate Neural Audit
+                    </button>
+                </section>
 
-                <div class="glass-card p-6 text-center">
-                    <h4 class="text-gray-500 text-xs mb-2">RISK VARIANCE</h4>
-                    <p id="risk-score" class="text-3xl font-bold text-red-500">--</p>
-                </div>
+                <section id="agent-log" class="glass-card p-8 opacity-0 transition-all duration-1000">
+                    <h4 class="text-[9px] text-[#97144D] mb-6 tracking-widest uppercase font-bold">Live Stream Process</h4>
+                    <div id="log-entries" class="h-48 overflow-y-auto text-[11px] font-mono text-gray-400"></div>
+                </section>
+            </div>
 
-                <div class="glass-card p-6 text-center">
-                    <h4 class="text-gray-500 text-xs mb-2">AUDITED CAPACITY</h4>
-                    <p id="transaction-count" class="text-3xl font-bold text-blue-400">--</p>
-                </div>
+            <div class="lg:col-span-7">
+                <section id="results-display" class="hidden space-y-8">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass-card p-10 group hover:is-scanning">
+                            <div class="text-[10px] tracking-[0.3em] text-gray-500 mb-3 uppercase">Sutra Health</div>
+                            <div id="health-score" class="text-6xl font-bold tracking-tighter text-white group-hover:text-[#97144D] transition-colors">--</div>
+                        </div>
+                        <div class="glass-card p-10 group hover:is-scanning">
+                            <div class="text-[10px] tracking-[0.3em] text-gray-500 mb-3 uppercase">Risk Variance</div>
+                            <div id="risk-score" class="text-6xl font-bold tracking-tighter text-white">--</div>
+                        </div>
+                    </div>
 
-                <div class="glass-card p-6 col-span-1 md:col-span-3">
-                    <h4 class="text-[#97144D] text-xs mb-2 font-bold tracking-widest uppercase">Neural Verdict</h4>
-                    <p id="ai-verdict-text" class="text-lg italic text-gray-200 leading-relaxed pt-2">Waiting for data injection...</p>
-                </div>
+                    <div class="glass-card p-10 border-l-4 border-l-[#97144D]">
+                        <div class="flex justify-between items-center mb-8">
+                            <span class="text-[10px] tracking-widest text-gray-500 uppercase italic">Neural Verdict Analysis</span>
+                            <span id="transaction-count" class="text-[10px] px-3 py-1 bg-[#97144D]/20 rounded-full text-[#97144D] font-bold tracking-widest">--</span>
+                        </div>
+                        <p id="ai-verdict-text" class="text-3xl md:text-4xl font-light text-gray-100 leading-tight tracking-tight">
+                            Decrypting structural integrity...
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-            </section>
-        </main>
-
-        <footer class="mt-20 text-center text-gray-600 text-xs tracking-widest">
-            PROPRIETARY ARCHITECT LOGIC | v3.0.1
+        <footer class="mt-32 text-center opacity-30">
+            <p class="text-[9px] tracking-[1em] uppercase">Built for Sovereignty • Secured by Starborn</p>
         </footer>
     </div>
 
     <script>
-        const auditSteps = [
-            "Establishing secure vault handshake...",
-            "Injecting institutional datasets...",
-            "Tokenizing PII using HMAC-SHA256...",
-            "Running capital variance models (IQR)...",
-            "Detecting structural duplication vectors...",
-            "Finalizing governance verdict..."
-        ];
+        // --- BACKGROUND PARTICLES ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-        async function runLiveLogs() {
-            const logSection = document.getElementById('agent-log');
-            const logContainer = document.getElementById('log-entries');
-            logSection.classList.remove('hidden');
-            logContainer.innerHTML = '';
-
-            for (const step of auditSteps) {
-                const entry = document.createElement('div');
-                entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
-                logContainer.appendChild(entry);
-                logContainer.scrollTop = logContainer.scrollHeight;
-                await new Promise(r => setTimeout(r, 600));
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5 + 0.1
+                });
             }
         }
 
-        function formatValue(val) {
-            if (val === undefined || val === null) return "0%";
-            return String(val).includes("%") ? val : val + "%";
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(151, 20, 77, 0.8)";
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
+                p.y -= p.speed;
+                if(p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(animate);
         }
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animate();
+
+        // --- AUDIT LOGIC ---
+        const steps = [
+            "Handshaking with Starborn Vault...",
+            "Decrypting vector assets...",
+            "Masking PII with HMAC-SHA256...",
+            "Running IQR Capital Variance...",
+            "Compiling structural verdict..."
+        ];
 
         async function processAudit() {
             const fileInput = document.getElementById('csvFile');
             const btn = document.getElementById('upload-btn');
             const display = document.getElementById('results-display');
+            const logContainer = document.getElementById('log-entries');
             const logSection = document.getElementById('agent-log');
 
-            if (!fileInput.files.length) {
-                alert("Please select a CSV file for auditing.");
-                return;
-            }
+            if(!fileInput.files.length) return alert("VAULT ACCESS DENIED: NO LEDGER DETECTED");
 
-            // UI Reset
-            display.classList.add('hidden');
-            logSection.classList.add('hidden');
-            btn.innerText = "PROCESSING VAULT...";
             btn.disabled = true;
+            btn.innerText = "SCRUBBING LEDGER...";
+            logSection.style.opacity = '1';
+            logContainer.innerHTML = '';
+            document.querySelectorAll('.glass-card').forEach(c => c.classList.add('is-scanning'));
 
-            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
-
-            // Start logs and API call simultaneously
-            const logPromise = runLiveLogs();
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
+            // Simulation of logs while backend works
+            const logPromise = (async () => {
+                for(const s of steps) {
+                    const div = document.createElement('div');
+                    div.innerText = "✦ " + s;
+                    logContainer.appendChild(div);
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                    await new Promise(r => setTimeout(r, 700));
+                }
+            })();
+
             try {
-                const response = await fetch('/api/audit', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) throw new Error("Audit Engine Unreachable");
-
-                const data = await response.json();
-                
-                // Wait for animations to finish
+                const res = await fetch('/api/audit', { method: 'POST', body: formData });
+                const data = await res.json();
                 await logPromise;
 
-                if (data.status !== "success") {
-                    throw new Error(data.message || "Neural Handshake Failure");
+                if(data.status === "success") {
+                    document.getElementById('health-score').innerText = data.sutra_health;
+                    document.getElementById('risk-score').innerText = data.risk_score;
+                    document.getElementById('transaction-count').innerText = "VECTORS: " + data.audited_capacity;
+                    document.getElementById('ai-verdict-text').innerText = data.verdict || data.summary;
+                    display.classList.remove('hidden');
+                    display.scrollIntoView({ behavior: 'smooth' });
                 }
-
-                // UI Binding with mapped data
-                document.getElementById('transaction-count').innerText = formatValue(data.audited_capacity);
-                document.getElementById('risk-score').innerText = formatValue(data.risk_score);
-                document.getElementById('health-score').innerText = formatValue(data.sutra_health);
-                document.getElementById('ai-verdict-text').innerText = data.verdict || data.summary || "Audit Successful.";
-
-                // Show Results
-                display.classList.remove('hidden');
-
-            } catch (err) {
-                console.error("PROTOCOL FAULT:", err);
-                alert("Critical System Error: " + err.message);
+            } catch(e) {
+                alert("PROTOCOL FAULT: " + e.message);
             } finally {
-                btn.innerText = "PROTOCOL COMPLETE";
                 btn.disabled = false;
-                document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning'));
+                btn.innerText = "AUDIT SEALED";
+                document.querySelectorAll('.glass-card').forEach(c => c.classList.remove('is-scanning'));
             }
         }
     </script>
