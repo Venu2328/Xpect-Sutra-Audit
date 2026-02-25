@@ -1,195 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XPECT | Sovereign AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>XPECT | Sovereign AI Governance</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #97144D; --accent: #FF3D68; }
-        body {
-            font-family: 'Space+Grotesk', sans-serif;
-            background: #ffffff;
-            color: #000;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Particle Nebula (Light Version) */
-        #nebula-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        /* Sovereign Floating Animation */
-        .sovereign-float { animation: float 6s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(1deg); }
-        }
-
-        /* The "XPECT" Shimmer */
-        .shimmer {
-            background: linear-gradient(90deg, #000, var(--primary), #000);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 4s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        /* High-End Glass Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(151, 20, 77, 0.1);
-            border-radius: 40px;
-            box-shadow: 0 30px 60px -12px rgba(151, 20, 77, 0.08);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .glass-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: var(--primary);
-            box-shadow: 0 40px 80px -15px rgba(151, 20, 77, 0.15);
-        }
-
-        /* Audit Pulse */
-        .is-scanning { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-        .btn-xpect {
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 20px;
-            color: white;
-            font-weight: 700;
-            letter-spacing: 3px;
-            box-shadow: 0 15px 35px rgba(151, 20, 77, 0.25);
-            transition: all 0.4s ease;
-        }
-        .btn-xpect:hover { transform: scale(1.05); filter: brightness(1.1); }
+        :root { --crimson: #97144D; --cream: #FAF9F6; --glass-white: rgba(255, 255, 255, 0.7); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); color: #1a1a1a; overflow-x: hidden; }
+        h1, h2, h3, .serif-font { font-family: 'Playfair Display', serif; }
+        .nebula-cream { background: radial-gradient(circle at 10% 20%, rgba(151, 20, 77, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(151, 20, 77, 0.05) 0%, transparent 40%); }
+        .glass-card { background: var(--glass-white); backdrop-filter: blur(16px); border: 1px solid rgba(151, 20, 77, 0.08); border-radius: 32px; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+        .btn-elite { background: var(--crimson); color: white; padding: 16px 40px; border-radius: 100px; font-weight: 700; transition: all 0.4s ease; border: none; cursor: pointer; }
+        .btn-elite:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(151, 20, 77, 0.2); }
+        .btn-elite:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .scanner-line { height: 2px; background: linear-gradient(90deg, transparent, var(--crimson), transparent); position: absolute; width: 100%; top: -2px; opacity: 0; z-index: 10; }
+        .is-scanning .scanner-line { animation: scan 2s linear infinite; opacity: 1; }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
     </style>
 </head>
-<body class="antialiased">
+<body class="min-h-screen nebula-cream">
+    <nav class="fixed w-full z-50 top-0 px-8 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center glass-card px-8 py-4 !rounded-2xl">
+            <span class="text-2xl font-black tracking-tighter serif-font italic">XPECT</span>
+            <div class="hidden md:flex gap-10 text-[10px] font-bold tracking-[0.2em] uppercase opacity-60">
+                <span>Vault</span><span>Infrastructure</span>
+            </div>
+        </div>
+    </nav>
 
-    <canvas id="nebula-canvas"></canvas>
+    <main class="pt-32 pb-20 px-8">
+        <div class="max-w-4xl mx-auto text-center mb-16">
+            <h1 class="text-5xl md:text-7xl mb-8">Engineering outcomes for the <span class="italic text-[#97144D]">99th percentile</span>.</h1>
+        </div>
 
-    <div class="max-w-7xl mx-auto px-6 py-12">
-        <header class="text-center mb-24 sovereign-float">
-            <div class="inline-block p-1 mb-6 rounded-3xl bg-gradient-to-tr from-[#97144D] to-[#FF3D68]">
-                <div class="px-8 py-3 bg-white rounded-[22px] text-[10px] font-bold tracking-[0.5em] uppercase text-gray-500">
-                    Neural Analytics Platform
+        <section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-24 text-center">
+            <div class="glass-card p-10 dashboard-card">
+                <div class="scanner-line"></div>
+                <h4 class="text-[10px] font-bold opacity-30 uppercase mb-4 tracking-widest">Audited Capacity</h4>
+                <p id="transaction-count" class="text-5xl font-bold serif-font">0</p>
+            </div>
+            <div class="glass-card p-10 dashboard-card">
+                <div class="scanner-line"></div>
+                <h4 class="text-[10px] font-bold opacity-30 uppercase mb-4 tracking-widest">Risk Variance</h4>
+                <p id="risk-score" class="text-5xl font-bold serif-font">0%</p>
+            </div>
+            <div class="glass-card p-10 dashboard-card">
+                <div class="scanner-line"></div>
+                <h4 class="text-[10px] font-bold opacity-30 uppercase mb-4 tracking-widest">Sutra Health</h4>
+                <p id="health-score" class="text-5xl font-bold serif-font text-[#97144D]">0%</p>
+            </div>
+        </section>
+
+        <section class="max-w-3xl mx-auto text-center">
+            <div class="glass-card p-12 mb-8">
+                <input type="file" id="csvFile" accept=".csv" 
+                       class="block mx-auto text-sm text-gray-400 mb-8 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:bg-[#97144D]/10 file:text-[#97144D] cursor-pointer">
+                <button onclick="processAudit()" id="upload-btn" class="btn-elite">INITIALIZE PROTOCOL</button>
+            </div>
+
+            <div id="agent-log" class="hidden text-left glass-card p-8 bg-black/[0.02] border-none mb-8">
+                <h4 class="text-[10px] font-black uppercase text-[#97144D] mb-4 tracking-widest">Live Audit Stream</h4>
+                <div id="log-entries" class="text-[12px] font-mono opacity-60 space-y-2"></div>
+            </div>
+
+            <div id="results-display" class="hidden text-left glass-card p-10 border-l-4 border-[#97144D]">
+                <h3 class="text-xs font-black uppercase text-[#97144D] mb-2 tracking-widest">Linguistic Authority Verdict</h3>
+                <div id="ai-verdict-text" class="text-2xl serif-font text-black/80 mb-6">Analyzing...</div>
+                
+                <div class="grid grid-cols-2 gap-4 border-t border-black/5 pt-6">
+                    <div>
+                        <p class="text-[9px] font-bold uppercase opacity-40">Concentration Risk</p>
+                        <p id="r-conc" class="text-sm font-semibold">--</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-bold uppercase opacity-40">Velocity Analytics</p>
+                        <p id="r-vel" class="text-sm font-semibold">--</p>
+                    </div>
                 </div>
             </div>
-            <h1 class="text-8xl md:text-[12rem] font-bold tracking-tighter leading-none mb-4 shimmer">
-                XPECT
-            </h1>
-            <p class="text-xs tracking-[1em] text-gray-400 font-medium uppercase italic ml-4">Architecture of Sovereignty</p>
-        </header>
-
-        <main class="grid lg:grid-cols-12 gap-12 items-start">
-            
-            <div class="lg:col-span-5 space-y-8">
-                <section class="glass-card p-12">
-                    <h2 class="text-[10px] font-bold tracking-[0.3em] text-gray-400 mb-10 uppercase italic">Deposit Financial Vector</h2>
-                    <div class="relative group mb-10">
-                        <input type="file" id="csvFile" accept=".csv" class="hidden">
-                        <label for="csvFile" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-100 rounded-[30px] p-16 cursor-pointer hover:bg-gray-50/50 transition-all">
-                            <span id="file-label" class="text-gray-400 text-xs font-bold uppercase tracking-widest">Select Ledger</span>
-                        </label>
-                    </div>
-                    <button onclick="runAudit()" id="run-btn" class="btn-xpect w-full py-7 uppercase text-xs">Initialize Analysis</button>
-                </section>
-            </div>
-
-            <div class="lg:col-span-7">
-                <section id="results" class="hidden space-y-8">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="glass-card p-10">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Sutra Health</p>
-                            <h2 id="m-health" class="text-6xl font-bold text-[#97144D] tracking-tighter">--</h2>
-                        </div>
-                        <div class="glass-card p-10">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Volatility</p>
-                            <h2 id="m-risk" class="text-6xl font-bold text-black tracking-tighter">--</h2>
-                        </div>
-                    </div>
-
-                    <div class="glass-card p-12 border-l-[12px] border-l-[#97144D]">
-                        <div class="flex justify-between items-start mb-10">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Neural Verdict</p>
-                            <span id="m-vol" class="text-xs font-bold px-4 py-1 bg-gray-100 rounded-full">--</span>
-                        </div>
-                        <h3 id="r-verdict" class="text-4xl md:text-6xl font-light text-black tracking-tight leading-[1.1] mb-12 italic">--</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-8 pt-8 border-t border-gray-100">
-                            <div>
-                                <p class="text-[9px] font-black text-[#97144D] uppercase mb-2">Concentration Index</p>
-                                <p id="r-conc" class="text-lg font-medium text-gray-600">--</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-[#97144D] uppercase mb-2">Velocity Analytics</p>
-                                <p id="r-vel" class="text-lg font-medium text-gray-600">--</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-        </main>
-
-        <footer class="mt-40 text-center opacity-40">
-            <p class="text-[9px] tracking-[1.5em] text-gray-500 uppercase">Proprietary Xpect Engine • v4.0.1</p>
-        </footer>
-    </div>
+        </section>
+    </main>
 
     <script>
-        // Particle Background Logic (The "Starborn" feel)
-        const canvas = document.getElementById('nebula-canvas');
-        const ctx = canvas.getContext('2d');
-        let parts = [];
-        function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            for(let i=0; i<70; i++) parts.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*3, v: Math.random()*0.4 });
+        const auditSteps = [
+            "Establishing secure vault handshake...",
+            "Decrypting financial vectors...",
+            "Calculating Gini Concentration Index...",
+            "Running Z-Score Outlier Detection...",
+            "Finalizing institutional verdict..."
+        ];
+        
+        async function runLiveLogs() {
+            const container = document.getElementById('log-entries');
+            document.getElementById('agent-log').classList.remove('hidden');
+            container.innerHTML = '';
+            for (const step of auditSteps) {
+                const entry = document.createElement('div');
+                entry.innerHTML = `✦ ${step}`;
+                container.appendChild(entry);
+                await new Promise(r => setTimeout(r, 600));
+            }
         }
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#97144D";
-            parts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); p.y -= p.v; if(p.y < 0) p.y = canvas.height; });
-            requestAnimationFrame(draw);
-        }
-        init(); draw();
 
-        document.getElementById('csvFile').onchange = function() {
-            document.getElementById('file-label').innerText = this.files[0].name;
-        };
-
-        async function runAudit() {
-            const file = document.getElementById('csvFile').files[0];
-            if(!file) return alert("VAULT ACCESS DENIED");
+        async function processAudit() {
+            const fileInput = document.getElementById('csvFile');
+            const btn = document.getElementById('upload-btn');
+            const file = fileInput.files[0];
             
-            const btn = document.getElementById('run-btn');
-            btn.disabled = true; btn.innerText = "SCRUBBING LEDGER...";
-            document.querySelectorAll('.glass-card').forEach(c => c.classList.add('is-scanning'));
+            if (!file) return alert("Select a CSV for auditing.");
+            
+            // UI State Start
+            btn.disabled = true;
+            btn.innerText = "SCRUBBING...";
+            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
+            
+            const logPromise = runLiveLogs();
+            const formData = new FormData();
+            formData.append('file', file);
 
-            const fd = new FormData(); fd.append('file', file);
             try {
-                const res = await fetch('/api/audit', { method: 'POST', body: fd });
-                const d = await res.json();
-                if(d.status === 'success') {
-                    document.getElementById('m-health').innerText = d.metrics.health;
-                    document.getElementById('m-risk').innerText = d.metrics.risk;
-                    document.getElementById('m-vol').innerText = "VOL: " + d.metrics.vol;
-                    document.getElementById('r-conc').innerText = d.analyst_report.concentration;
-                    document.getElementById('r-vel').innerText = d.analyst_report.velocity;
-                    document.getElementById('r-verdict').innerText = d.analyst_report.verdict;
-                    document.getElementById('results').classList.remove('hidden');
-                    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                // Change URL to '/api/audit' for Vercel deployment or your specific local port
+                const res = await fetch('/api/audit', { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                const data = await res.json();
+                await logPromise;
+
+                if (data.status === "success") {
+                    // Mapping to your current app.py keys
+                    document.getElementById('transaction-count').innerText = data.metrics.nodes;
+                    document.getElementById('risk-score').innerText = data.metrics.risk;
+                    document.getElementById('health-score').innerText = data.metrics.health;
+                    
+                    document.getElementById('ai-verdict-text').innerText = data.analyst_report.verdict;
+                    document.getElementById('r-conc').innerText = data.analyst_report.concentration;
+                    document.getElementById('r-vel').innerText = data.analyst_report.velocity;
+                    
+                    document.getElementById('results-display').classList.remove('hidden');
+                    document.getElementById('results-display').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert("Protocol Error: " + data.message);
                 }
-            } catch(e) { alert("FAULT DETECTED"); }
-            finally { btn.disabled = false; btn.innerText = "AUDIT COMPLETE"; document.querySelectorAll('.glass-card').forEach(c => c.classList.remove('is-scanning')); }
+            } catch (e) { 
+                console.error(e);
+                alert("Backend Unreachable. Ensure your Flask app is running."); 
+            } finally { 
+                btn.disabled = false;
+                btn.innerText = "INITIALIZE PROTOCOL";
+                document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning')); 
+            }
         }
     </script>
 </body>
