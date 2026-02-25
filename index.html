@@ -1,119 +1,201 @@
-<script>
-const auditSteps = [
-    "Establishing secure vault handshake...",
-    "Injecting institutional datasets...",
-    "Tokenizing PII using HMAC-SHA256...",
-    "Running capital variance models...",
-    "Detecting structural duplication vectors...",
-    "Finalizing governance verdict..."
-];
-
-async function runLiveLogs() {
-    const logContainer = document.getElementById('log-entries');
-    document.getElementById('agent-log').classList.remove('hidden');
-    logContainer.innerHTML = '';
-
-    for (const step of auditSteps) {
-        const entry = document.createElement('div');
-        entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
-        logContainer.appendChild(entry);
-        logContainer.scrollTop = logContainer.scrollHeight;
-        await new Promise(r => setTimeout(r, 650));
-    }
-}
-
-function formatPercent(val) {
-    if (!val) return "0%";
-    return String(val).includes("%") ? val : val + "%";
-}
-
-async function processAudit() {
-
-    const fileInput = document.getElementById('csvFile');
-    const btn = document.getElementById('upload-btn');
-    const display = document.getElementById('results-display');
-    const logSection = document.getElementById('agent-log');
-
-    if (!fileInput.files.length) {
-        alert("Please select a CSV file.");
-        return;
-    }
-
-    display.classList.add('hidden');
-    logSection.classList.add('hidden');
-
-    btn.innerText = "ENGINEERING RESULTS...";
-    btn.disabled = true;
-
-    document.querySelectorAll('.glass-card')
-        .forEach(el => el.classList.add('is-scanning'));
-
-    const logPromise = runLiveLogs();
-
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-
-    try {
-
-        const response = await fetch('/api/audit', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) throw new Error("API unreachable");
-
-        const data = await response.json();
-        console.log("AUDIT RESPONSE →", data);
-
-        await logPromise;
-
-        if (data.status !== "success") {
-            throw new Error(data.message || data.error || "Unknown audit failure");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUTRA | Sovereign AI Governance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Space+Grotesk', sans-serif;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            color: #fff;
+            min-height: 100vh;
         }
 
-        // ✅ UNIVERSAL DATA MAPPER (old + new backend compatible)
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-        const summary = data.summary || data;
+        .is-scanning {
+            border-color: #97144D;
+            box-shadow: 0 0 20px rgba(151, 20, 77, 0.3);
+            animation: pulse 2s infinite;
+        }
 
-        const auditedCapacity =
-            summary.audited_capacity ?? data.audited_capacity ?? 0;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
 
-        const riskVariance =
-            summary.risk_variance ?? data.risk_score ?? 0;
+        .custom-button {
+            background: linear-gradient(90deg, #97144D 0%, #ff4b2b 100%);
+            transition: all 0.3s ease;
+        }
 
-        const sutraHealth =
-            summary.sutra_health ?? data.sutra_health ?? 0;
+        .custom-button:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px rgba(151, 20, 77, 0.5);
+        }
 
-        const verdict =
-            data.verdict ?? data.summary ?? "No linguistic verdict generated.";
+        #log-entries {
+            scrollbar-width: thin;
+            scrollbar-color: #97144D transparent;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
 
-        // ✅ UI BINDING
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-2">SUTRA <span class="text-[#97144D]">VAULT</span></h1>
+            <p class="text-gray-400 uppercase tracking-[0.2em] text-sm">Institutional AI Audit Protocol</p>
+        </header>
 
-        document.getElementById('transaction-count').innerText =
-            formatPercent(auditedCapacity);
+        <main class="grid gap-8">
+            
+            <section class="glass-card p-8 text-center">
+                <div class="mb-6">
+                    <label for="csvFile" class="block text-gray-400 mb-4">DEPOSIT LEDGER FOR NEURAL SCRUBBING</label>
+                    <input type="file" id="csvFile" accept=".csv" 
+                           class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#97144D] file:text-white hover:file:bg-[#7a103e] cursor-pointer">
+                </div>
+                <button onclick="processAudit()" id="upload-btn" class="custom-button w-full py-4 rounded-xl font-bold text-lg uppercase tracking-widest">
+                    Initialize Protocol
+                </button>
+            </section>
 
-        document.getElementById('risk-score').innerText =
-            formatPercent(riskVariance);
+            <section id="agent-log" class="glass-card p-6 hidden">
+                <h3 class="text-xs font-bold text-[#97144D] mb-4 tracking-widest uppercase">Live Audit Stream</h3>
+                <div id="log-entries" class="h-40 overflow-y-auto space-y-2 text-sm font-mono text-gray-300">
+                    </div>
+            </section>
 
-        document.getElementById('health-score').innerText =
-            formatPercent(sutraHealth);
+            <section id="results-display" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
+                
+                <div class="glass-card p-6 text-center">
+                    <h4 class="text-gray-500 text-xs mb-2">SUTRA HEALTH</h4>
+                    <p id="health-score" class="text-3xl font-bold text-green-400">--</p>
+                </div>
 
-        document.getElementById('ai-verdict-text').innerText = verdict;
+                <div class="glass-card p-6 text-center">
+                    <h4 class="text-gray-500 text-xs mb-2">RISK VARIANCE</h4>
+                    <p id="risk-score" class="text-3xl font-bold text-red-500">--</p>
+                </div>
 
-        display.classList.remove('hidden');
+                <div class="glass-card p-6 text-center">
+                    <h4 class="text-gray-500 text-xs mb-2">AUDITED CAPACITY</h4>
+                    <p id="transaction-count" class="text-3xl font-bold text-blue-400">--</p>
+                </div>
 
-    } catch (err) {
+                <div class="glass-card p-6 col-span-1 md:col-span-3">
+                    <h4 class="text-[#97144D] text-xs mb-2 font-bold tracking-widest uppercase">Neural Verdict</h4>
+                    <p id="ai-verdict-text" class="text-lg italic text-gray-200 leading-relaxed pt-2">Waiting for data injection...</p>
+                </div>
 
-        console.error("AUDIT FAILURE →", err);
-        alert("Protocol Error: " + err.message);
+            </section>
+        </main>
 
-    } finally {
+        <footer class="mt-20 text-center text-gray-600 text-xs tracking-widest">
+            PROPRIETARY ARCHITECT LOGIC | v3.0.1
+        </footer>
+    </div>
 
-        btn.innerText = "PROTOCOL SEALED";
-        btn.disabled = false;
+    <script>
+        const auditSteps = [
+            "Establishing secure vault handshake...",
+            "Injecting institutional datasets...",
+            "Tokenizing PII using HMAC-SHA256...",
+            "Running capital variance models (IQR)...",
+            "Detecting structural duplication vectors...",
+            "Finalizing governance verdict..."
+        ];
 
-        document.querySelectorAll('.glass-card')
-            .forEach(el => el.classList.remove('is-scanning'));
-    }
-}
-</script>
+        async function runLiveLogs() {
+            const logSection = document.getElementById('agent-log');
+            const logContainer = document.getElementById('log-entries');
+            logSection.classList.remove('hidden');
+            logContainer.innerHTML = '';
+
+            for (const step of auditSteps) {
+                const entry = document.createElement('div');
+                entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
+                logContainer.appendChild(entry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                await new Promise(r => setTimeout(r, 600));
+            }
+        }
+
+        function formatValue(val) {
+            if (val === undefined || val === null) return "0%";
+            return String(val).includes("%") ? val : val + "%";
+        }
+
+        async function processAudit() {
+            const fileInput = document.getElementById('csvFile');
+            const btn = document.getElementById('upload-btn');
+            const display = document.getElementById('results-display');
+            const logSection = document.getElementById('agent-log');
+
+            if (!fileInput.files.length) {
+                alert("Please select a CSV file for auditing.");
+                return;
+            }
+
+            // UI Reset
+            display.classList.add('hidden');
+            logSection.classList.add('hidden');
+            btn.innerText = "PROCESSING VAULT...";
+            btn.disabled = true;
+
+            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
+
+            // Start logs and API call simultaneously
+            const logPromise = runLiveLogs();
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/api/audit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error("Audit Engine Unreachable");
+
+                const data = await response.json();
+                
+                // Wait for animations to finish
+                await logPromise;
+
+                if (data.status !== "success") {
+                    throw new Error(data.message || "Neural Handshake Failure");
+                }
+
+                // UI Binding with mapped data
+                document.getElementById('transaction-count').innerText = formatValue(data.audited_capacity);
+                document.getElementById('risk-score').innerText = formatValue(data.risk_score);
+                document.getElementById('health-score').innerText = formatValue(data.sutra_health);
+                document.getElementById('ai-verdict-text').innerText = data.verdict || data.summary || "Audit Successful.";
+
+                // Show Results
+                display.classList.remove('hidden');
+
+            } catch (err) {
+                console.error("PROTOCOL FAULT:", err);
+                alert("Critical System Error: " + err.message);
+            } finally {
+                btn.innerText = "PROTOCOL COMPLETE";
+                btn.disabled = false;
+                document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning'));
+            }
+        }
+    </script>
+</body>
+</html>
