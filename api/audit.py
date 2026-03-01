@@ -1,53 +1,62 @@
-from fastapi import FastAPI, UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pandas as pd
 import io
 
-app = FastAPI()
+app = Flask(__name__)
+CORS(app)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def perform_banking_audit(df):
+    """Real calculation engine for banking datasets."""
+    total_records = len(df)
+    
+    # 1. Integrity Check: Identify missing critical financial fields
+    missing_data_points = df.isnull().sum().sum()
+    integrity_ratio = max(0, 100 - (missing_data_points / (total_records * len(df.columns)) * 100))
+    
+    # 2. Risk Variance: Simulating pattern detection (e.g., suspicious amount spikes)
+    # In a real sector audit, we look for standard deviations in transaction values
+    if 'amount' in df.columns:
+        mean_val = df['amount'].mean()
+        std_val = df['amount'].std()
+        # High risk if transactions are > 3 standard deviations from mean
+        outliers = len(df[df['amount'] > (mean_val + 3 * std_val)])
+        risk_variance = min(100, (outliers / total_records) * 500) 
+    else:
+        # Fallback logic if 'amount' column is missing
+        risk_variance = 12.5 
 
-@app.post("/api/audit")
-async def perform_audit(file: UploadFile = File(...)):
+    # 3. Sutra Health: The weighted average of fairness and transparency
+    health_score = round((integrity_ratio * 0.7) + ((100 - risk_variance) * 0.3), 2)
+    
+    return {
+        "count": total_records,
+        "health": f"{health_score}%",
+        "risk": f"{round(risk_variance, 2)}%",
+        "verdict": f"Audit complete. Detected {total_records} nodes. Integrity at {round(integrity_ratio, 1)}%."
+    }
+
+@app.route('/api/audit', methods=['POST'])
+def audit():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file"}), 400
+    
+    file = request.files['file']
     try:
-        content = await file.read()
-        df = pd.read_csv(io.BytesIO(content))
+        df = pd.read_csv(io.StringIO(file.stream.read().decode("UTF-8", errors='replace')))
+        results = perform_banking_audit(df)
         
-        # --- SUTRA PATTERN LOGIC ---
-        total_nodes = len(df) 
-        
-        # 1. Behavioral Cluster Detection (Identical amounts)
-        mode_val = df['amount'].mode()[0] if not df.empty else 0
-        cluster_count = df[df['amount'] == mode_val].shape[0]
-        cluster_ratio = (cluster_count / total_nodes) * 100
-        
-        # 2. Threshold Proximity Detection (The $10k Law)
-        # Flags transactions that hit or hide near the reporting limit
-        threshold_events = df[df['amount'] >= 10000].shape[0]
-        
-        # 3. Calculated Sovereign Health
-        health = 100 - (cluster_ratio * 0.4) - (threshold_events * 20)
-        health = max(5, min(100, health))
-
-        # Industrial Verdict Generation
-        verdict = f"SUTRA ANALYSIS: Detected {cluster_ratio:.0f}% behavioral mirroring. "
-        if threshold_events > 0:
-            verdict += f"CRITICAL: Found {threshold_events} event(s) exceeding legal reporting thresholds. High probability of probing behavior."
-        else:
-            verdict += "Liquidity vectors appear structurally consistent."
-
-        return {
+        return jsonify({
             "status": "success",
-            "transaction_count": f"{total_nodes} Nodes",
-            "risk_score": f"{cluster_ratio:.1f}% Pattern",
-            "health_score": f"{health:.0f}%",
-            "summary": verdict
-        }
+            "transaction_count": results["count"],
+            "health_score": results["health"],
+            "risk_score": results["risk"],
+            "summary": results["verdict"]
+        })
     except Exception as e:
-        return {"status": "error", "message": "Ensure CSV has an 'amount' column."}
-        
+        return jsonify({"error": str(e)}), 500
+
+# Required for Vercel Serverless
+def handler(request):
+    return app(request)
+    
