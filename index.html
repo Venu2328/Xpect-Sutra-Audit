@@ -1,233 +1,105 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>XPECT | Sovereign Intelligence</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<style>
-:root{
---crimson:#97144D;
---violet:#5E2B97;
---gold:#C6A75E;
---ink:#111111;
---cream:#FAF9F6;
---glass:rgba(255,255,255,0.75);
---ease:cubic-bezier(.22,1,.36,1);
-}
-
-html,body{
-margin:0;
-background:var(--cream);
-font-family:'Plus Jakarta Sans',sans-serif;
-color:var(--ink);
-overflow-x:hidden;
-}
-
-/* ========== AMBIENT SYSTEM ========== */
-.ambient{
-position:fixed;
-inset:0;
-z-index:-2;
-background:
-radial-gradient(circle at 20% 30%, rgba(151,20,77,.12), transparent 40%),
-radial-gradient(circle at 80% 70%, rgba(94,43,151,.10), transparent 50%);
-transition:background 1.2s var(--ease);
-}
-
-.noise{
-position:fixed;
-inset:0;
-z-index:-1;
-opacity:.035;
-pointer-events:none;
-background-image:url("https://grainy-gradients.vercel.app/noise.svg");
-}
-
-/* ========== CARD SYSTEM ========== */
-.card{
-background:var(--glass);
-backdrop-filter:blur(22px);
-border-radius:26px;
-border:1px solid rgba(0,0,0,.06);
-transition:transform .5s var(--ease), box-shadow .5s var(--ease);
-position:relative;
-}
-
-.card:hover{
-box-shadow:0 30px 60px -15px rgba(151,20,77,.25);
-transform: translateY(-5px);
-}
-
-/* ========== BUTTON ========== */
-.btn{
-background:var(--crimson);
-color:white;
-padding:18px 52px;
-border-radius:16px;
-font-weight:700;
-letter-spacing:.18em;
-font-size:11px;
-transition:.4s var(--ease);
-cursor: pointer;
-}
-
-.btn:hover:not(:disabled){
-transform:translateY(-3px) scale(1.03);
-box-shadow:0 0 45px rgba(151,20,77,.45);
-}
-
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ========== LOG FADE ========== */
-.log-entry{
-opacity:0;
-transform:translateY(5px);
-animation:fade .5s forwards;
-color: var(--crimson);
-}
-
-@keyframes fade{
-to{opacity:.7;transform:translateY(0);}
-}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>XPECT | Sovereign Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --crimson: #97144D; --cream: #FAF9F6; --glass: rgba(255,255,255,0.75); }
+        body { background: var(--cream); font-family: 'Plus Jakarta Sans', sans-serif; color: #111; margin: 0; overflow-x: hidden; }
+        .card { background: var(--glass); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid rgba(0,0,0,0.05); transition: all 0.4s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(151,20,77,0.15); }
+        .btn { background: var(--crimson); color: white; padding: 16px 48px; border-radius: 12px; font-weight: 700; letter-spacing: 0.1em; transition: 0.3s; }
+        .btn:hover:not(:disabled) { opacity: 0.9; transform: scale(1.02); shadow: 0 10px 20px rgba(151,20,77,0.2); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .log-entry { opacity: 0.7; font-family: monospace; font-size: 11px; margin-bottom: 8px; border-left: 2px solid var(--crimson); padding-left: 10px; }
+    </style>
 </head>
-
-<body data-state="idle">
-
-<div class="ambient"></div>
-<div class="noise"></div>
-
-<nav class="fixed w-full px-10 py-6 z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center card px-8 py-4 !rounded-xl shadow-sm border-none">
-        <div class="flex items-center gap-2">
-            <span class="text-[var(--crimson)] font-bold">◈</span>
-            <span class="text-xl font-black italic tracking-tight" style="font-family:Playfair Display;">XPECT</span>
+<body>
+    <nav class="fixed w-full px-8 py-6 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center card px-6 py-4 !rounded-xl">
+            <span class="text-xl font-black italic tracking-tighter" style="font-family:'Playfair Display'">XPECT</span>
+            <span class="text-[9px] uppercase tracking-widest opacity-40 font-bold">Institutional Access</span>
         </div>
-        <div class="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold">Institutional Access</div>
-    </div>
-</nav>
+    </nav>
 
-<main class="pt-44 pb-20 px-8">
-    <section class="text-center mb-24">
-        <p class="text-[10px] tracking-[0.5em] uppercase text-[var(--crimson)] font-bold mb-4">Sovereign Intelligence</p>
-        <h1 class="text-6xl md:text-7xl leading-[1.1] mb-8" style="font-family:Playfair Display;">
-            Engineering <span class="italic text-[var(--crimson)]">Certainty.</span>
-        </h1>
-        <p class="opacity-40 max-w-xl mx-auto text-sm">Advanced cryptographic auditing for high-velocity institutional datasets.</p>
-    </section>
+    <main class="pt-40 pb-20 px-8">
+        <section class="text-center mb-20">
+            <h1 class="text-5xl md:text-7xl mb-6" style="font-family:'Playfair Display'">Engineering <span class="italic text-[#97144D]">Certainty.</span></h1>
+            <p class="opacity-40 text-sm max-w-lg mx-auto">Advanced AI auditing for high-velocity banking datasets.</p>
+        </section>
 
-    <section class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-24">
-        <div class="card p-10 text-center">
-            <h4 class="text-xs opacity-30 uppercase tracking-widest mb-4">Audited Volume</h4>
-            <p id="metric-vol" class="text-5xl font-bold" style="font-family:Playfair Display;">0</p>
-        </div>
-        <div class="card p-10 text-center">
-            <h4 class="text-xs opacity-30 uppercase tracking-widest mb-4">Risk Variance</h4>
-            <p id="metric-risk" class="text-5xl font-bold" style="font-family:Playfair Display;">0%</p>
-        </div>
-        <div class="card p-10 text-center">
-            <h4 class="text-xs opacity-30 uppercase tracking-widest mb-4">Sutra Health</h4>
-            <p id="metric-health" class="text-5xl font-bold text-[var(--crimson)]" style="font-family:Playfair Display;">0%</p>
-        </div>
-    </section>
+        <section class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-20">
+            <div class="card p-10 text-center">
+                <h4 class="text-[10px] uppercase tracking-widest opacity-30 mb-2">Volume</h4>
+                <p id="vol" class="text-4xl font-bold" style="font-family:'Playfair Display'">0</p>
+            </div>
+            <div class="card p-10 text-center">
+                <h4 class="text-[10px] uppercase tracking-widest opacity-30 mb-2">Risk</h4>
+                <p id="risk" class="text-4xl font-bold" style="font-family:'Playfair Display'">0%</p>
+            </div>
+            <div class="card p-10 text-center">
+                <h4 class="text-[10px] uppercase tracking-widest opacity-30 mb-2">Sutra Health</h4>
+                <p id="health" class="text-4xl font-bold text-[#97144D]" style="font-family:'Playfair Display'">0%</p>
+            </div>
+        </section>
 
-    <section class="max-w-2xl mx-auto text-center">
-        <div class="card p-12 border-2 border-dashed border-[var(--crimson)]/20">
-            <h2 class="text-xl mb-8" style="font-family:Playfair Display;">Initialize <span class="italic">Vault Connection</span></h2>
+        <section class="max-w-2xl mx-auto text-center">
+            <div class="card p-12 border-2 border-dashed border-[#97144D]/20">
+                <input type="file" id="csvFile" accept=".csv" class="mb-8 text-xs block mx-auto">
+                <button id="runBtn" onclick="run()" class="btn">INITIALIZE PROTOCOL</button>
+            </div>
+            <div id="log" class="hidden mt-8 card p-6 text-left bg-black/5 space-y-2"></div>
+            <div id="verdictBox" class="hidden mt-8 card p-10 border-l-4 border-[#97144D] text-left">
+                <h3 class="text-[10px] font-bold text-[#97144D] uppercase tracking-widest mb-4">Authority Verdict</h3>
+                <p id="verdictText" class="italic text-lg" style="font-family:'Playfair Display'"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        async function run() {
+            const file = document.getElementById('csvFile').files[0];
+            if(!file) return alert("Select CSV");
             
-            <input type="file" id="csvFile" accept=".csv" class="mb-10 text-xs block mx-auto cursor-pointer">
+            const btn = document.getElementById('runBtn');
+            const log = document.getElementById('log');
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
+            log.classList.remove('hidden');
+            log.innerHTML = "";
 
-            <button class="btn uppercase" id="upload-btn" onclick="startAudit()">Initialize Protocol</button>
-        </div>
+            const steps = ["Authenticating...", "Indexing...", "Applying Sutra Heuristics..."];
+            for(const s of steps) {
+                log.innerHTML += `<div class="log-entry">> ${s}</div>`;
+                await new Promise(r => setTimeout(r, 600));
+            }
 
-        <div id="log" class="hidden mt-10 card p-8 text-left text-[11px] font-mono space-y-3 bg-black/5"></div>
+            const fd = new FormData();
+            fd.append('file', file);
 
-        <div id="verdict" class="hidden mt-8 card p-10 border-l-4 border-[var(--crimson)] text-left">
-            <h3 class="text-xs uppercase tracking-widest text-[var(--crimson)] mb-4 font-bold">Authority Verdict</h3>
-            <div id="verdictText" class="italic text-lg leading-relaxed" style="font-family:Playfair Display;"></div>
-        </div>
-    </section>
-</main>
+            try {
+                // FIXED: URL changed to /api/audit for Vercel deployment
+                const res = await fetch('/api/audit', { method: 'POST', body: fd });
+                const data = await res.json();
 
-<script>
-/* ========== UTILS ========== */
-function springCount(id, targetStr, duration=1500){
-    const el = document.getElementById(id);
-    const target = parseInt(targetStr.replace(/[^0-9]/g, '')) || 0;
-    const isPercent = targetStr.includes('%');
-    let startTime = performance.now();
-    
-    function animate(now){
-        let t = Math.min((now - startTime) / duration, 1);
-        let eased = 1 - Math.pow(1 - t, 4);
-        let current = Math.floor(eased * target);
-        el.textContent = current.toLocaleString() + (isPercent ? '%' : '');
-        if(t < 1) requestAnimationFrame(animate);
-    }
-    requestAnimationFrame(animate);
-}
-
-/* ========== AUDIT FLOW ========== */
-async function startAudit(){
-    const fileInput = document.getElementById('csvFile');
-    const btn = document.getElementById('upload-btn');
-    const log = document.getElementById('log');
-    const verdict = document.getElementById('verdict');
-    
-    if (!fileInput.files[0]) return alert("Institutional Access Denied: Please select a CSV dataset.");
-
-    // UI Reset
-    btn.disabled = true;
-    btn.innerText = "ENGAGING ENGINE...";
-    log.classList.remove('hidden');
-    log.innerHTML = "";
-    verdict.classList.add('hidden');
-
-    // 1. Start Visual Logs
-    const steps = [
-        "Authenticating encrypted handshake...",
-        "Indexing dataset structural metadata...",
-        "Executing multi-vector heuristics...",
-        "Communicating with Sovereign Brain..."
-    ];
-
-    for(const step of steps){
-        let d = document.createElement("div");
-        d.className = "log-entry";
-        d.textContent = "> " + step;
-        log.appendChild(d);
-        await new Promise(r => setTimeout(r, 600));
-    }
-
-    // 2. Real API Call to your Python Backend
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-
-    try {
-        const response = await fetch('http://127.0.0.1:8000/audit', { method: 'POST', body: formData });
-        const data = await response.json();
-
-        if (data.status === "success") {
-            // Update Metrics with Animation using Real Data
-            springCount("metric-vol", data.transaction_count.toString());
-            springCount("metric-risk", data.risk_score);
-            springCount("metric-health", data.health_score);
-
-            // Show Verdict
-            verdict.classList.remove('hidden');
-            document.getElementById('verdictText').innerText = data.summary;
-            btn.innerText = "PROTOCOL SEALED";
+                if(data.status === "success") {
+                    document.getElementById('vol').innerText = data.transaction_count.toLocaleString();
+                    document.getElementById('risk').innerText = data.risk_score;
+                    document.getElementById('health').innerText = data.health_score;
+                    document.getElementById('verdictText').innerText = data.summary;
+                    document.getElementById('verdictBox').classList.remove('hidden');
+                    btn.innerText = "COMPLETE";
+                }
+            } catch(e) {
+                alert("Backend Offline. Ensure your GitHub /api/ folder is correct.");
+                btn.disabled = false;
+                btn.innerText = "RETRY";
+            }
         }
-    } catch (e) {
-        alert("Protocol Error: Backend Engine (app.py) is offline.");
-        btn.disabled = false;
-        btn.innerText = "RETRY PROTOCOL";
-    }
-}
-</script>
+    </script>
 </body>
 </html>
+
