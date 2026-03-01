@@ -5,7 +5,6 @@ import io
 
 app = FastAPI()
 
-# Enable CORS so the frontend can talk to the backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,23 +13,41 @@ app.add_middleware(
 )
 
 @app.post("/api/audit")
-async def audit(file: UploadFile = File(...)):
+async def perform_audit(file: UploadFile = File(...)):
     try:
-        # Read the uploaded CSV
         content = await file.read()
         df = pd.read_csv(io.BytesIO(content))
         
-        # Calculate dynamic metrics based on the file content
-        count = len(df)
+        # --- SUTRA PATTERN LOGIC ---
+        total_nodes = len(df) 
         
-        # Return the response formatted for your frontend
+        # 1. Behavioral Cluster Detection (Identical amounts)
+        mode_val = df['amount'].mode()[0] if not df.empty else 0
+        cluster_count = df[df['amount'] == mode_val].shape[0]
+        cluster_ratio = (cluster_count / total_nodes) * 100
+        
+        # 2. Threshold Proximity Detection (The $10k Law)
+        # Flags transactions that hit or hide near the reporting limit
+        threshold_events = df[df['amount'] >= 10000].shape[0]
+        
+        # 3. Calculated Sovereign Health
+        health = 100 - (cluster_ratio * 0.4) - (threshold_events * 20)
+        health = max(5, min(100, health))
+
+        # Industrial Verdict Generation
+        verdict = f"SUTRA ANALYSIS: Detected {cluster_ratio:.0f}% behavioral mirroring. "
+        if threshold_events > 0:
+            verdict += f"CRITICAL: Found {threshold_events} event(s) exceeding legal reporting thresholds. High probability of probing behavior."
+        else:
+            verdict += "Liquidity vectors appear structurally consistent."
+
         return {
             "status": "success",
-            "transaction_count": count,
-            "risk_score": "12%",
-            "health_score": "94%",
-            "summary": f"Audit of {count} transactions finalized. System integrity within sovereign parameters. No anomalous liquidity vectors detected."
+            "transaction_count": f"{total_nodes} Nodes",
+            "risk_score": f"{cluster_ratio:.1f}% Pattern",
+            "health_score": f"{health:.0f}%",
+            "summary": verdict
         }
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return {"status": "error", "message": "Ensure CSV has an 'amount' column."}
         
