@@ -1,4 +1,4 @@
-fastapi
+flask
+flask-cors
 pandas
-python-multipart
-uvicorn
+numpy
