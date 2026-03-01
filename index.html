@@ -1,231 +1,321 @@
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XPECT | Sovereign AI Governance</title>
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --crimson: #97144D;
-            --cream: #FAF9F6; 
-            --glass-white: rgba(255, 255, 255, 0.75);
-            --glow-strength: rgba(151, 20, 77, 0.12);
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XPECT | Sovereign Intelligence</title>
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--cream);
-            color: #1a1a1a;
-            overflow-x: hidden;
-            letter-spacing: -0.01em;
-        }
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-        h1, h2, h3, .serif-font { font-family: 'Playfair Display', serif; }
+<style>
+:root{
+--crimson:#97144D;
+--violet:#5E2B97;
+--gold:#C6A75E;
+--ink:#111111;
+--cream:#FAF9F6;
+--glass:rgba(255,255,255,0.75);
+--ease:cubic-bezier(.22,1,.36,1);
+}
 
-        .nebula-cream {
-            background: 
-                radial-gradient(circle at 0% 0%, rgba(151, 20, 77, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(151, 20, 77, 0.03) 0%, transparent 50%);
-        }
+html,body{
+margin:0;
+background:var(--cream);
+font-family:'Plus Jakarta Sans',sans-serif;
+color:var(--ink);
+overflow-x:hidden;
+}
 
-        /* --- AUTHENTIC PROFESSIONAL CARDS --- */
-        .glass-card {
-            background: var(--glass-white);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(151, 20, 77, 0.06);
-            border-radius: 24px;
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative;
-        }
+/* ========== AMBIENT SYSTEM ========== */
 
-        /* The "Back Glow" you requested */
-        .glass-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(151, 20, 77, 0.3);
-            box-shadow: 
-                0 20px 40px -10px var(--glow-strength),
-                0 10px 20px -15px rgba(0,0,0,0.1);
-        }
+.ambient{
+position:fixed;
+inset:0;
+z-index:-2;
+background:
+radial-gradient(circle at 20% 30%, rgba(151,20,77,.12), transparent 40%),
+radial-gradient(circle at 80% 70%, rgba(94,43,151,.10), transparent 50%);
+transition:background 1.2s var(--ease);
+}
 
-        /* --- THE PROFESSIONAL BUTTON --- */
-        .btn-elite {
-            background: var(--crimson);
-            color: white;
-            padding: 18px 48px;
-            border-radius: 14px; /* More professional "SaaS" radius */
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-size: 11px;
-            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            box-shadow: 0 4px 15px rgba(151, 20, 77, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
+.noise{
+position:fixed;
+inset:0;
+z-index:-1;
+opacity:.035;
+pointer-events:none;
+background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+}
 
-        .btn-elite:hover:not(:disabled) {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(151, 20, 77, 0.4);
-            letter-spacing: 0.2em; /* Expands slightly for "active" feel */
-        }
+/* ========== HERO CHOREOGRAPHY ========== */
 
-        /* Liquid Light Ripple Effect */
-        .btn-elite::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            transform: scale(0);
-            transition: transform 0.6s ease-out;
-        }
+.hero span{
+display:inline-block;
+opacity:0;
+transform:translateY(50px) blur(10px);
+}
 
-        .btn-elite:active::after { transform: scale(1); opacity: 0; }
+.hero.reveal span{
+animation:rise .9s var(--ease) forwards;
+}
 
-        /* --- SCANNER EFFECT --- */
-        .scanner-line {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--crimson), transparent);
-            position: absolute;
-            width: 100%; top: 0; opacity: 0;
-        }
+.hero.reveal span:nth-child(2){
+animation-delay:.18s;
+}
 
-        .is-scanning .scanner-line {
-            animation: scan 2s linear infinite;
-            opacity: 1;
-        }
+@keyframes rise{
+to{opacity:1;transform:translateY(0) blur(0);}
+}
 
-        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+/* ========== CARD SYSTEM ========== */
 
-        /* Smooth reveal for logs */
-        #log-entries div {
-            animation: fadeIn 0.4s ease-out forwards;
-            opacity: 0;
-            border-left: 1px solid rgba(151, 20, 77, 0.2);
-            padding-left: 12px;
-        }
-        @keyframes fadeIn { from { transform: translateY(5px); opacity: 0; } to { transform: translateY(0); opacity: 0.6; } }
-    </style>
+.card{
+background:var(--glass);
+backdrop-filter:blur(22px);
+border-radius:26px;
+border:1px solid rgba(0,0,0,.06);
+transition:transform .5s var(--ease), box-shadow .5s var(--ease);
+transform-style:preserve-3d;
+position:relative;
+}
+
+.card:hover{
+box-shadow:0 30px 60px -15px rgba(151,20,77,.25);
+}
+
+.card::before{
+content:"";
+position:absolute;
+inset:0;
+border-radius:26px;
+background:linear-gradient(120deg, rgba(255,255,255,.45), transparent 50%);
+opacity:0;
+transition:.4s;
+}
+
+.card:hover::before{
+opacity:.5;
+}
+
+/* ========== BUTTON ========== */
+
+.btn{
+background:var(--crimson);
+color:white;
+padding:18px 52px;
+border-radius:16px;
+font-weight:700;
+letter-spacing:.18em;
+font-size:11px;
+transition:.4s var(--ease);
+position:relative;
+overflow:hidden;
+}
+
+.btn:hover{
+transform:translateY(-3px) scale(1.03);
+box-shadow:0 0 45px rgba(151,20,77,.45);
+}
+
+/* ========== STATE VISUAL SHIFTS ========== */
+
+body[data-state="processing"] .ambient{
+background:
+radial-gradient(circle at 30% 40%, rgba(94,43,151,.18), transparent 40%),
+radial-gradient(circle at 70% 60%, rgba(151,20,77,.12), transparent 50%);
+}
+
+body[data-state="complete"] .ambient{
+background:
+radial-gradient(circle at 50% 50%, rgba(198,167,94,.25), transparent 45%);
+}
+
+/* ========== ACCESSIBILITY ========== */
+
+@media (prefers-reduced-motion: reduce){
+*{animation:none!important;transition:none!important}
+}
+
+/* ========== LOG FADE ========== */
+
+.log-entry{
+opacity:0;
+transform:translateY(5px);
+animation:fade .5s forwards;
+}
+
+@keyframes fade{
+to{opacity:.7;transform:translateY(0);}
+}
+</style>
 </head>
-<body class="min-h-screen nebula-cream">
 
-    <nav class="fixed w-full z-50 top-0 px-8 py-6">
-        <div class="max-w-6xl mx-auto flex justify-between items-center glass-card px-8 py-4 !rounded-xl border-none shadow-sm">
-            <div class="flex items-center gap-2">
-                <span class="text-[#97144D] font-bold">◈</span>
-                <span class="text-xl font-black tracking-tighter serif-font italic">XPECT</span>
-            </div>
-            <div class="text-[9px] font-black tracking-[0.3em] uppercase opacity-40">
-                Institutional Access Only
-            </div>
-        </div>
-    </nav>
+<body data-state="idle">
 
-    <main class="pt-44 pb-20 px-8">
-        <div class="max-w-3xl mx-auto text-center mb-24">
-            <p class="text-[10px] font-black tracking-[0.5em] text-[#97144D] uppercase mb-4">Sovereign Intelligence</p>
-            <h1 class="text-5xl md:text-7xl mb-8 leading-[1.1]">Engineering <span class="italic text-[#97144D]">Certainty</span>.</h1>
-            <p class="text-sm opacity-40 max-w-lg mx-auto font-medium">Advanced cryptographic auditing for high-velocity institutional datasets.</p>
-        </div>
+<div class="ambient"></div>
+<div class="noise"></div>
 
-        <section class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
-            <div class="glass-card p-10 relative overflow-hidden group">
-                <div class="scanner-line"></div>
-                <h4 class="text-[9px] font-bold opacity-30 uppercase mb-4 tracking-widest">Audited Volume</h4>
-                <p id="transaction-count" class="text-5xl font-bold serif-font group-hover:text-[#97144D] transition-colors">0</p>
-            </div>
-            <div class="glass-card p-10 relative overflow-hidden group">
-                <div class="scanner-line"></div>
-                <h4 class="text-[9px] font-bold opacity-30 uppercase mb-4 tracking-widest">Risk Variance</h4>
-                <p id="risk-score" class="text-5xl font-bold serif-font group-hover:text-[#97144D] transition-colors">0%</p>
-            </div>
-            <div class="glass-card p-10 relative overflow-hidden group">
-                <div class="scanner-line"></div>
-                <h4 class="text-[9px] font-bold opacity-30 uppercase mb-4 tracking-widest">Sutra Health</h4>
-                <p id="health-score" class="text-5xl font-bold serif-font text-[#97144D]">0%</p>
-            </div>
-        </section>
+<nav class="fixed w-full px-10 py-6 z-50">
+<div class="max-w-6xl mx-auto flex justify-between items-center card px-8 py-4 !rounded-xl shadow-sm">
+<div class="flex items-center gap-2">
+<span class="text-[var(--crimson)] font-bold">◈</span>
+<span class="text-xl font-black italic tracking-tight" style="font-family:Playfair Display;">XPECT</span>
+</div>
+<div class="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold">
+Institutional Access
+</div>
+</div>
+</nav>
 
-        <section class="max-w-2xl mx-auto">
-            <div class="glass-card p-12 text-center border-dashed border-2">
-                <h2 class="text-xl serif-font mb-8 opacity-80">Initialize <span class="italic">Vault Connection</span></h2>
-                <input type="file" id="csvFile" accept=".csv" class="block mx-auto text-xs text-gray-400 mb-10 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:bg-[#97144D]/5 file:text-[#97144D] file:font-bold cursor-pointer hover:file:bg-[#97144D]/10 transition-all">
-                <button onclick="processAudit()" id="upload-btn" class="btn-elite">Initialize Protocol</button>
-            </div>
+<main class="pt-44 pb-20 px-8">
 
-            <div id="agent-log" class="hidden mt-8 text-left glass-card p-8 bg-black/[0.01] border-none shadow-inner">
-                <div class="flex items-center gap-3 mb-6">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#97144D] animate-pulse"></span>
-                    <h4 class="text-[9px] font-black uppercase text-[#97144D] tracking-[0.2em]">Engine Operations</h4>
-                </div>
-                <div id="log-entries" class="text-[11px] font-mono space-y-3"></div>
-            </div>
-            
-            <div id="results-display" class="hidden mt-8 text-left glass-card p-10 border-l-4 border-[#97144D] shadow-xl">
-                <h3 class="text-[9px] font-black uppercase text-[#97144D] mb-4 tracking-widest">Authority Verdict</h3>
-                <div id="ai-verdict-text" class="text-lg italic serif-font text-black/80 leading-relaxed"></div>
-            </div>
-        </section>
-    </main>
+<section class="text-center mb-24">
+<p class="text-[10px] tracking-[0.5em] uppercase text-[var(--crimson)] font-bold mb-4">
+Sovereign Intelligence
+</p>
 
-    <script>
-        const auditSteps = [
-            "Authenticating encrypted handshake...",
-            "Indexing dataset structural metadata...",
-            "Executing SHA-256 anonymization sequence...",
-            "Running multi-vector risk heuristics...",
-            "Finalizing Sovereign Audit summary..."
-        ];
+<h1 class="hero text-6xl md:text-7xl leading-[1.1] mb-8" style="font-family:Playfair Display;">
+<span>Engineering</span>
+<span class="italic text-[var(--crimson)]">Certainty.</span>
+</h1>
 
-        async function runLiveLogs() {
-            const container = document.getElementById('log-entries');
-            document.getElementById('agent-log').classList.remove('hidden');
-            container.innerHTML = '';
-            for (const step of auditSteps) {
-                const entry = document.createElement('div');
-                entry.innerHTML = `> ${step}`;
-                container.appendChild(entry);
-                await new Promise(r => setTimeout(r, 700));
-            }
-        }
+<p class="opacity-40 max-w-xl mx-auto text-sm">
+Advanced cryptographic auditing for high-velocity institutional datasets.
+</p>
+</section>
 
-        async function processAudit() {
-            const file = document.getElementById('csvFile').files[0];
-            const btn = document.getElementById('upload-btn');
-            if (!file) return;
+<section class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-24">
 
-            btn.disabled = true;
-            btn.innerText = "Processing Dataset...";
-            
-            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
-            const logPromise = runLiveLogs();
-            
-            const formData = new FormData();
-            formData.append('file', file);
+<div class="card p-10 text-center">
+<h4 class="text-xs opacity-30 uppercase tracking-widest mb-4">Audited Volume</h4>
+<p id="metric1" class="text-5xl font-bold" style="font-family:Playfair Display;">0</p>
+</div>
 
-            try {
-                const res = await fetch('http://127.0.0.1:8000/audit', { method: 'POST', body: formData });
-                const data = await res.json();
-                await logPromise;
+<div class="card p-10 text-center">
+<h4 class="text-xs opacity-30 uppercase tracking-widest mb-4">Risk Variance</h4>
+<p id="metric2" class="text-5xl font-bold" style="font-family:Playfair Display;">0%</p>
+</div>
 
-                if (data.status === "success") {
-                    document.getElementById('transaction-count').innerText = data.transaction_count.toLocaleString();
-                    document.getElementById('risk-score').innerText = data.risk_score;
-                    document.getElementById('health-score').innerText = data.health_score;
-                    document.getElementById('ai-verdict-text').innerText = data.summary;
-                    document.getElementById('results-display').classList.remove('hidden');
-                    btn.innerText = "Audit Complete";
-                }
-            } catch (e) { 
-                alert("Interface Error: Connect Python app.py"); 
-                btn.disabled = false;
-                btn.innerText = "Initialize Protocol";
-            } finally {
-                document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning'));
-            }
-        }
-    </script>
+<div class="card p-10 text-center">
+<h4 class="text-xs opacity-30 uppercase tracking-widest mb-4">Sutra Health</h4>
+<p id="metric3" class="text-5xl font-bold text-[var(--crimson)]" style="font-family:Playfair Display;">0%</p>
+</div>
+
+</section>
+
+<section class="max-w-2xl mx-auto text-center">
+
+<div class="card p-12 border-2 border-dashed">
+<h2 class="text-xl mb-8" style="font-family:Playfair Display;">
+Initialize <span class="italic">Vault Connection</span>
+</h2>
+
+<input type="file" id="fileInput" class="mb-10 text-xs">
+
+<br>
+
+<button class="btn" onclick="startAudit()">Initialize Protocol</button>
+
+</div>
+
+<div id="log" class="hidden mt-10 card p-8 text-left text-xs font-mono space-y-3"></div>
+
+<div id="verdict" class="hidden mt-8 card p-10 border-l-4 border-[var(--crimson)] text-left">
+<h3 class="text-xs uppercase tracking-widest text-[var(--crimson)] mb-4 font-bold">
+Authority Verdict
+</h3>
+<div id="verdictText" class="italic text-lg" style="font-family:Playfair Display;"></div>
+</div>
+
+</section>
+
+</main>
+
+<script>
+
+/* ========== STATE MACHINE ========== */
+
+const state = {
+current:"idle",
+set(newState){
+this.current=newState;
+document.body.dataset.state=newState;
+}
+};
+
+/* ========== SPRING COUNTER ========== */
+
+function springCount(id,target,duration=1200){
+const el=document.getElementById(id);
+let start=0;
+const startTime=performance.now();
+function animate(now){
+let t=Math.min((now-startTime)/duration,1);
+let eased=1-Math.pow(1-t,4);
+el.textContent=Math.floor(eased*target).toLocaleString();
+if(t<1)requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+}
+
+/* ========== TYPEWRITER ========== */
+
+function type(text,id){
+const el=document.getElementById(id);
+el.textContent="";
+let i=0;
+function write(){
+if(i<text.length){
+el.textContent+=text[i];
+i++;
+setTimeout(write,16);
+}
+}
+write();
+}
+
+/* ========== AUDIT FLOW ========== */
+
+async function startAudit(){
+
+state.set("processing");
+
+document.querySelector(".hero").classList.add("reveal");
+
+const log=document.getElementById("log");
+log.classList.remove("hidden");
+log.innerHTML="";
+
+const steps=[
+"Authenticating encrypted handshake...",
+"Indexing dataset metadata...",
+"Executing multi-vector heuristics...",
+"Finalizing sovereign audit..."
+];
+
+for(const step of steps){
+let d=document.createElement("div");
+d.className="log-entry";
+d.textContent="> "+step;
+log.appendChild(d);
+await new Promise(r=>setTimeout(r,700));
+}
+
+/* simulate data */
+springCount("metric1",1284532);
+springCount("metric2",12);
+springCount("metric3",94);
+
+state.set("complete");
+
+document.getElementById("verdict").classList.remove("hidden");
+
+type("Dataset integrity stable. Risk exposure within sovereign threshold. No anomalous liquidity vectors detected.","verdictText");
+
+}
+
+</script>
+
 </body>
 </html>
