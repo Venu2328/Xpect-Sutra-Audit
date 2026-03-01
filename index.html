@@ -1,68 +1,65 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>XPECT | Sovereign Intelligence</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPECT | Sovereign AI Governance</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --crimson: #97144D; --cream: #FAF9F6; --glass: rgba(255,255,255,0.7); }
-        body { background: var(--cream); font-family: 'Plus Jakarta Sans', sans-serif; }
-        .card { background: var(--glass); backdrop-filter: blur(20px); border-radius: 28px; border: 1px solid rgba(151,20,77,0.08); transition: all 0.5s ease; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(151,20,77,0.12); }
-        .btn-elite { background: var(--crimson); color: white; padding: 18px 50px; border-radius: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; font-size: 11px; transition: 0.4s; }
-        .btn-elite:hover:not(:disabled) { transform: scale(1.03); box-shadow: 0 0 30px rgba(151,20,77,0.4); }
+        :root { --crimson: #97144D; --cream: #FAF9F6; --glass-white: rgba(255, 255, 255, 0.7); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); color: #1a1a1a; overflow-x: hidden; }
+        h1, .serif-font { font-family: 'Playfair Display', serif; }
+        .nebula-cream { background: radial-gradient(circle at 10% 20%, rgba(151, 20, 77, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(151, 20, 77, 0.05) 0%, transparent 40%); }
+        .glass-card { background: var(--glass-white); backdrop-filter: blur(16px); border: 1px solid rgba(151, 20, 77, 0.08); border-radius: 32px; transition: all 0.5s ease; }
+        .glass-card:hover { transform: translateY(-8px); border-color: var(--crimson); box-shadow: 0 20px 40px rgba(151, 20, 77, 0.1); }
+        .btn-elite { background: var(--crimson); color: white; padding: 16px 40px; border-radius: 100px; font-weight: 700; transition: all 0.4s ease; cursor: pointer; }
+        .btn-elite:hover:not(:disabled) { transform: scale(1.05); filter: brightness(1.2); }
+        .scanner-line { height: 1px; background: linear-gradient(90deg, transparent, var(--crimson), transparent); position: absolute; width: 100%; top: 0; opacity: 0; }
+        .is-scanning .scanner-line { animation: scan 2s linear infinite; opacity: 1; }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
     </style>
 </head>
-<body class="min-h-screen pt-44 px-8">
-    <nav class="fixed top-0 w-full px-8 py-6 z-50">
-        <div class="max-w-6xl mx-auto flex justify-between items-center card px-8 py-4 !border-none">
-            <span class="text-2xl font-black italic" style="font-family:'Playfair Display'">XPECT</span>
-            <span class="text-[9px] font-bold uppercase tracking-widest opacity-40">Institutional Access</span>
+<body class="min-h-screen nebula-cream">
+    <nav class="p-8"><div class="max-w-6xl mx-auto flex justify-between items-center glass-card px-8 py-4">
+        <span class="text-2xl font-black serif-font italic tracking-tighter">XPECT</span>
+        <div class="flex gap-8 text-[10px] font-bold uppercase opacity-60">
+            <span class="hover:text-[#97144D] cursor-pointer transition">Philosophy</span>
+            <span class="hover:text-[#97144D] cursor-pointer transition">Vault</span>
         </div>
-    </nav>
-
-    <div class="max-w-4xl mx-auto text-center mb-20">
-        <h1 class="text-6xl md:text-8xl mb-8 leading-tight" style="font-family:'Playfair Display'">Engineering <br><span class="italic text-[#97144D]">Certainty.</span></h1>
-    </div>
-
-    <section class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20 text-center">
-        <div class="card p-12"><h4 class="text-[10px] uppercase opacity-30 mb-4 font-bold">Volume</h4><p id="vol" class="text-5xl font-bold">0</p></div>
-        <div class="card p-12"><h4 class="text-[10px] uppercase opacity-30 mb-4 font-bold">Pattern Match</h4><p id="risk" class="text-5xl font-bold">0%</p></div>
-        <div class="card p-12"><h4 class="text-[10px] uppercase opacity-30 mb-4 font-bold">Sutra Health</h4><p id="health" class="text-5xl font-bold text-[#97144D]">0%</p></div>
-    </section>
-
-    <section class="max-w-2xl mx-auto text-center">
-        <div class="card p-14 border-2 border-dashed border-[#97144D]/20">
-            <input type="file" id="csvFile" accept=".csv" class="block mx-auto mb-10 text-xs">
-            <button id="runBtn" onclick="initAudit()" class="btn-elite">Initialize Protocol</button>
-        </div>
-        <div id="verdictBox" class="hidden mt-10 card p-12 border-l-8 border-[#97144D] text-left">
-            <h3 class="text-[10px] font-black uppercase text-[#97144D] mb-6">Linguistic Authority Verdict</h3>
-            <p id="vText" class="text-xl italic leading-relaxed" style="font-family:'Playfair Display'"></p>
-        </div>
-    </section>
-
+    </div></nav>
+    <main class="pt-10 pb-20 px-8 text-center">
+        <h1 class="text-6xl mb-12">Sovereign <span class="italic text-[#97144D]">Audit</span> Engine</h1>
+        <section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div class="glass-card p-10 relative overflow-hidden"><div class="scanner-line"></div><h4 class="text-[10px] opacity-40 uppercase mb-4">Capacity</h4><p id="transaction-count" class="text-5xl font-bold serif-font">0</p></div>
+            <div class="glass-card p-10 relative overflow-hidden"><div class="scanner-line"></div><h4 class="text-[10px] opacity-40 uppercase mb-4">Risk Variance</h4><p id="risk-score" class="text-5xl font-bold serif-font">0%</p></div>
+            <div class="glass-card p-10 relative overflow-hidden"><div class="scanner-line"></div><h4 class="text-[10px] opacity-40 uppercase mb-4">Sutra Health</h4><p id="health-score" class="text-5xl font-bold serif-font text-[#97144D]">0%</p></div>
+        </section>
+        <section class="max-w-2xl mx-auto glass-card p-12">
+            <input type="file" id="csvFile" accept=".csv" class="mb-8 block mx-auto text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#97144D]/10 file:text-[#97144D]">
+            <button onclick="processAudit()" id="upload-btn" class="btn-elite">INITIALIZE SCAN</button>
+            <div id="agent-log" class="hidden mt-8 text-left font-mono text-[10px] opacity-50 space-y-2"></div>
+        </section>
+    </main>
     <script>
-        async function initAudit() {
+        async function processAudit() {
             const file = document.getElementById('csvFile').files[0];
             if(!file) return alert("Select CSV");
-            const btn = document.getElementById('runBtn');
-            btn.disabled = true; btn.innerText = "PROCESSING...";
-
-            const fd = new FormData(); fd.append('file', file);
+            const btn = document.getElementById('upload-btn');
+            const log = document.getElementById('agent-log');
+            btn.disabled = true; btn.innerText = "AUDITING...";
+            log.classList.remove('hidden'); log.innerHTML = "Establishing handshake...<br>Parsing banking nodes...";
+            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
+            const formData = new FormData(); formData.append('file', file);
             try {
-                const res = await fetch('/api/audit', { method: 'POST', body: fd });
+                const res = await fetch('/api/audit', { method: 'POST', body: formData });
                 const data = await res.json();
-                if(data.status === "success") {
-                    document.getElementById('vol').innerText = data.transaction_count;
-                    document.getElementById('risk').innerText = data.risk_score;
-                    document.getElementById('health').innerText = data.health_score;
-                    document.getElementById('vText').innerText = data.summary;
-                    document.getElementById('verdictBox').classList.remove('hidden');
-                    btn.innerText = "AUDIT SEALED";
-                }
-            } catch(e) { alert("Engine Offline."); btn.disabled = false; }
+                document.getElementById('transaction-count').innerText = data.transaction_count;
+                document.getElementById('risk-score').innerText = data.risk_score;
+                document.getElementById('health-score').innerText = data.health_score;
+                log.innerHTML += "<br>Verdict: " + data.summary;
+            } catch (e) { alert("Error: Check if backend is deployed."); }
+            finally { btn.disabled = false; btn.innerText = "SCAN COMPLETE"; document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning')); }
         }
     </script>
 </body>
