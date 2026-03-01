@@ -1,66 +1,119 @@
-<!doctype html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XPECT | Sovereign AI Governance</title>
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --crimson: #97144D; --cream: #FAF9F6; --glass-white: rgba(255, 255, 255, 0.7); }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); color: #1a1a1a; overflow-x: hidden; }
-        h1, .serif-font { font-family: 'Playfair Display', serif; }
-        .nebula-cream { background: radial-gradient(circle at 10% 20%, rgba(151, 20, 77, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(151, 20, 77, 0.05) 0%, transparent 40%); }
-        .glass-card { background: var(--glass-white); backdrop-filter: blur(16px); border: 1px solid rgba(151, 20, 77, 0.08); border-radius: 32px; transition: all 0.5s ease; }
-        .glass-card:hover { transform: translateY(-8px); border-color: var(--crimson); box-shadow: 0 20px 40px rgba(151, 20, 77, 0.1); }
-        .btn-elite { background: var(--crimson); color: white; padding: 16px 40px; border-radius: 100px; font-weight: 700; transition: all 0.4s ease; cursor: pointer; }
-        .btn-elite:hover:not(:disabled) { transform: scale(1.05); filter: brightness(1.2); }
-        .scanner-line { height: 1px; background: linear-gradient(90deg, transparent, var(--crimson), transparent); position: absolute; width: 100%; top: 0; opacity: 0; }
-        .is-scanning .scanner-line { animation: scan 2s linear infinite; opacity: 1; }
-        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
-    </style>
-</head>
-<body class="min-h-screen nebula-cream">
-    <nav class="p-8"><div class="max-w-6xl mx-auto flex justify-between items-center glass-card px-8 py-4">
-        <span class="text-2xl font-black serif-font italic tracking-tighter">XPECT</span>
-        <div class="flex gap-8 text-[10px] font-bold uppercase opacity-60">
-            <span class="hover:text-[#97144D] cursor-pointer transition">Philosophy</span>
-            <span class="hover:text-[#97144D] cursor-pointer transition">Vault</span>
-        </div>
-    </div></nav>
-    <main class="pt-10 pb-20 px-8 text-center">
-        <h1 class="text-6xl mb-12">Sovereign <span class="italic text-[#97144D]">Audit</span> Engine</h1>
-        <section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div class="glass-card p-10 relative overflow-hidden"><div class="scanner-line"></div><h4 class="text-[10px] opacity-40 uppercase mb-4">Capacity</h4><p id="transaction-count" class="text-5xl font-bold serif-font">0</p></div>
-            <div class="glass-card p-10 relative overflow-hidden"><div class="scanner-line"></div><h4 class="text-[10px] opacity-40 uppercase mb-4">Risk Variance</h4><p id="risk-score" class="text-5xl font-bold serif-font">0%</p></div>
-            <div class="glass-card p-10 relative overflow-hidden"><div class="scanner-line"></div><h4 class="text-[10px] opacity-40 uppercase mb-4">Sutra Health</h4><p id="health-score" class="text-5xl font-bold serif-font text-[#97144D]">0%</p></div>
-        </section>
-        <section class="max-w-2xl mx-auto glass-card p-12">
-            <input type="file" id="csvFile" accept=".csv" class="mb-8 block mx-auto text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#97144D]/10 file:text-[#97144D]">
-            <button onclick="processAudit()" id="upload-btn" class="btn-elite">INITIALIZE SCAN</button>
-            <div id="agent-log" class="hidden mt-8 text-left font-mono text-[10px] opacity-50 space-y-2"></div>
-        </section>
-    </main>
-    <script>
-        async function processAudit() {
-            const file = document.getElementById('csvFile').files[0];
-            if(!file) return alert("Select CSV");
-            const btn = document.getElementById('upload-btn');
-            const log = document.getElementById('agent-log');
-            btn.disabled = true; btn.innerText = "AUDITING...";
-            log.classList.remove('hidden'); log.innerHTML = "Establishing handshake...<br>Parsing banking nodes...";
-            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
-            const formData = new FormData(); formData.append('file', file);
-            try {
-                const res = await fetch('/api/audit', { method: 'POST', body: formData });
-                const data = await res.json();
-                document.getElementById('transaction-count').innerText = data.transaction_count;
-                document.getElementById('risk-score').innerText = data.risk_score;
-                document.getElementById('health-score').innerText = data.health_score;
-                log.innerHTML += "<br>Verdict: " + data.summary;
-            } catch (e) { alert("Error: Check if backend is deployed."); }
-            finally { btn.disabled = false; btn.innerText = "SCAN COMPLETE"; document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning')); }
+<script>
+const auditSteps = [
+    "Establishing secure vault handshake...",
+    "Injecting institutional datasets...",
+    "Tokenizing PII using HMAC-SHA256...",
+    "Running capital variance models...",
+    "Detecting structural duplication vectors...",
+    "Finalizing governance verdict..."
+];
+
+async function runLiveLogs() {
+    const logContainer = document.getElementById('log-entries');
+    document.getElementById('agent-log').classList.remove('hidden');
+    logContainer.innerHTML = '';
+
+    for (const step of auditSteps) {
+        const entry = document.createElement('div');
+        entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
+        logContainer.appendChild(entry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+        await new Promise(r => setTimeout(r, 650));
+    }
+}
+
+function formatPercent(val) {
+    if (!val) return "0%";
+    return String(val).includes("%") ? val : val + "%";
+}
+
+async function processAudit() {
+
+    const fileInput = document.getElementById('csvFile');
+    const btn = document.getElementById('upload-btn');
+    const display = document.getElementById('results-display');
+    const logSection = document.getElementById('agent-log');
+
+    if (!fileInput.files.length) {
+        alert("Please select a CSV file.");
+        return;
+    }
+
+    display.classList.add('hidden');
+    logSection.classList.add('hidden');
+
+    btn.innerText = "ENGINEERING RESULTS...";
+    btn.disabled = true;
+
+    document.querySelectorAll('.glass-card')
+        .forEach(el => el.classList.add('is-scanning'));
+
+    const logPromise = runLiveLogs();
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    try {
+
+        const response = await fetch('/api/audit', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("API unreachable");
+
+        const data = await response.json();
+        console.log("AUDIT RESPONSE →", data);
+
+        await logPromise;
+
+        if (data.status !== "success") {
+            throw new Error(data.message || data.error || "Unknown audit failure");
         }
-    </script>
-</body>
-</html>
+
+        // ✅ UNIVERSAL DATA MAPPER (old + new backend compatible)
+
+        const summary = data.summary || data;
+
+        const auditedCapacity =
+            summary.audited_capacity ?? data.audited_capacity ?? 0;
+
+        const riskVariance =
+            summary.risk_variance ?? data.risk_score ?? 0;
+
+        const sutraHealth =
+            summary.sutra_health ?? data.sutra_health ?? 0;
+
+        const verdict =
+            data.verdict ?? data.summary ?? "No linguistic verdict generated.";
+
+        // ✅ UI BINDING
+
+        document.getElementById('transaction-count').innerText =
+            formatPercent(auditedCapacity);
+
+        document.getElementById('risk-score').innerText =
+            formatPercent(riskVariance);
+
+        document.getElementById('health-score').innerText =
+            formatPercent(sutraHealth);
+
+        document.getElementById('ai-verdict-text').innerText = verdict;
+
+        display.classList.remove('hidden');
+
+    } catch (err) {
+
+        console.error("AUDIT FAILURE →", err);
+        alert("Protocol Error: " + err.message);
+
+    } finally {
+
+        btn.innerText = "PROTOCOL SEALED";
+        btn.disabled = false;
+
+        document.querySelectorAll('.glass-card')
+            .forEach(el => el.classList.remove('is-scanning'));
+    }
+}
+                                               </script>
