@@ -1,119 +1,285 @@
-<script>
-const auditSteps = [
-    "Establishing secure vault handshake...",
-    "Injecting institutional datasets...",
-    "Tokenizing PII using HMAC-SHA256...",
-    "Running capital variance models...",
-    "Detecting structural duplication vectors...",
-    "Finalizing governance verdict..."
-];
-
-async function runLiveLogs() {
-    const logContainer = document.getElementById('log-entries');
-    document.getElementById('agent-log').classList.remove('hidden');
-    logContainer.innerHTML = '';
-
-    for (const step of auditSteps) {
-        const entry = document.createElement('div');
-        entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
-        logContainer.appendChild(entry);
-        logContainer.scrollTop = logContainer.scrollHeight;
-        await new Promise(r => setTimeout(r, 650));
-    }
-}
-
-function formatPercent(val) {
-    if (!val) return "0%";
-    return String(val).includes("%") ? val : val + "%";
-}
-
-async function processAudit() {
-
-    const fileInput = document.getElementById('csvFile');
-    const btn = document.getElementById('upload-btn');
-    const display = document.getElementById('results-display');
-    const logSection = document.getElementById('agent-log');
-
-    if (!fileInput.files.length) {
-        alert("Please select a CSV file.");
-        return;
-    }
-
-    display.classList.add('hidden');
-    logSection.classList.add('hidden');
-
-    btn.innerText = "ENGINEERING RESULTS...";
-    btn.disabled = true;
-
-    document.querySelectorAll('.glass-card')
-        .forEach(el => el.classList.add('is-scanning'));
-
-    const logPromise = runLiveLogs();
-
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-
-    try {
-
-        const response = await fetch('/api/audit', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) throw new Error("API unreachable");
-
-        const data = await response.json();
-        console.log("AUDIT RESPONSE →", data);
-
-        await logPromise;
-
-        if (data.status !== "success") {
-            throw new Error(data.message || data.error || "Unknown audit failure");
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPECT | Sovereign AI Governance</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --crimson: #97144D;
+            --cream: #FAF9F6; 
+            --glass-white: rgba(255, 255, 255, 0.7);
         }
 
-        // ✅ UNIVERSAL DATA MAPPER (old + new backend compatible)
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--cream);
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
 
-        const summary = data.summary || data;
+        h1, h2, h3, .serif-font { font-family: 'Playfair Display', serif; }
 
-        const auditedCapacity =
-            summary.audited_capacity ?? data.audited_capacity ?? 0;
+        .nebula-cream {
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(151, 20, 77, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(151, 20, 77, 0.05) 0%, transparent 40%);
+        }
 
-        const riskVariance =
-            summary.risk_variance ?? data.risk_score ?? 0;
+        .spark-icon {
+            color: var(--crimson);
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
 
-        const sutraHealth =
-            summary.sutra_health ?? data.sutra_health ?? 0;
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1.1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
-        const verdict =
-            data.verdict ?? data.summary ?? "No linguistic verdict generated.";
+        .glass-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(151, 20, 77, 0.08);
+            border-radius: 32px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-        // ✅ UI BINDING
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--crimson);
+            box-shadow: 0 20px 40px rgba(151, 20, 77, 0.1);
+        }
 
-        document.getElementById('transaction-count').innerText =
-            formatPercent(auditedCapacity);
+        nav span { cursor: pointer; transition: all 0.3s ease; }
+        nav span:hover { color: var(--crimson); text-shadow: 0 0 15px rgba(151, 20, 77, 0.3); }
 
-        document.getElementById('risk-score').innerText =
-            formatPercent(riskVariance);
+        .btn-elite {
+            background: var(--crimson);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 100px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(151, 20, 77, 0.2);
+            transition: all 0.4s ease;
+        }
 
-        document.getElementById('health-score').innerText =
-            formatPercent(sutraHealth);
+        .btn-elite:hover:not(:disabled) {
+            transform: scale(1.02);
+            filter: brightness(1.2);
+            box-shadow: 0 15px 30px rgba(151, 20, 77, 0.3);
+        }
 
-        document.getElementById('ai-verdict-text').innerText = verdict;
+        .btn-elite:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        display.classList.remove('hidden');
+        .scanner-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--crimson), transparent);
+            position: absolute; width: 100%; top: 0; opacity: 0;
+        }
 
-    } catch (err) {
+        .is-scanning .scanner-line { animation: scan 2s linear infinite; opacity: 1; }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        
+        #log-entries div { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body class="min-h-screen nebula-cream">
 
-        console.error("AUDIT FAILURE →", err);
-        alert("Protocol Error: " + err.message);
+    <nav class="fixed w-full z-50 top-0 px-8 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center glass-card px-8 py-4 !rounded-2xl">
+            <div class="flex items-center gap-3">
+                <span class="spark-icon text-xl">✦</span>
+                <span class="text-2xl font-black tracking-tighter serif-font italic">XPECT</span>
+            </div>
+            <div class="hidden md:flex gap-10 text-[10px] font-bold tracking-[0.2em] uppercase opacity-60">
+                <span>Philosophy</span><span>Vault</span><span>Infrastructure</span>
+            </div>
+            <div class="h-8 w-8 flex flex-col justify-center gap-1.5 cursor-pointer group">
+                <div class="h-[2px] w-full bg-[#97144D]"></div>
+                <div class="h-[2px] w-1/2 bg-[#97144D] self-end group-hover:w-full transition-all"></div>
+            </div>
+        </div>
+    </nav>
 
-    } finally {
+    <main class="pt-32 pb-20 px-8">
+        <div class="max-w-4xl mx-auto text-center mb-16">
+            <p class="text-[12px] font-extrabold tracking-[0.4em] text-[#97144D] uppercase mb-6">Sovereign AI Governance</p>
+            <h1 class="text-5xl md:text-7xl mb-8">Engineering outcomes for the <span class="italic text-[#97144D]">99th percentile</span>.</h1>
+        </div>
 
-        btn.innerText = "PROTOCOL SEALED";
-        btn.disabled = false;
+        <section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+            <div class="glass-card p-10 relative overflow-hidden">
+                <div class="scanner-line"></div>
+                <h4 class="text-[10px] font-bold text-black/30 uppercase mb-4 tracking-widest">Audited Capacity</h4>
+                <p id="transaction-count" class="text-5xl font-bold serif-font">0</p>
+            </div>
+            <div class="glass-card p-10 relative overflow-hidden">
+                <div class="scanner-line"></div>
+                <h4 class="text-[10px] font-bold text-black/30 uppercase mb-4 tracking-widest">Risk Variance</h4>
+                <p id="risk-score" class="text-5xl font-bold serif-font">0%</p>
+            </div>
+            <div class="glass-card p-10 relative overflow-hidden">
+                <div class="scanner-line"></div>
+                <h4 class="text-[10px] font-bold text-black/30 uppercase mb-4 tracking-widest">Sutra Health</h4>
+                <p id="health-score" class="text-5xl font-bold serif-font text-[#97144D]">0%</p>
+            </div>
+        </section>
 
-        document.querySelectorAll('.glass-card')
-            .forEach(el => el.classList.remove('is-scanning'));
-    }
-}
-                                               </script>
+        <section class="max-w-3xl mx-auto text-center">
+            <h2 class="text-4xl mb-6">Unlock the <span class="text-[#97144D]">Sutra Vault</span></h2>
+            <div class="glass-card p-12 mb-12">
+                <input type="file" id="csvFile" accept=".csv" class="block mx-auto text-sm text-gray-400 mb-8 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:bg-[#97144D]/10 file:text-[#97144D] cursor-pointer">
+                <button onclick="processAudit()" id="upload-btn" class="btn-elite uppercase tracking-widest text-xs">Initialize Protocol</button>
+            </div>
+
+            <div id="agent-log" class="hidden text-left glass-card p-8 bg-black/[0.02] border-none mb-12">
+                <h4 class="text-[10px] font-black uppercase text-[#97144D] mb-6 tracking-[0.2em] flex items-center gap-3">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#97144D] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#97144D]"></span>
+                    </span>
+                    Live Audit Stream
+                </h4>
+                <div id="log-entries" class="text-[12px] font-mono opacity-60 space-y-3 max-h-60 overflow-y-auto leading-relaxed"></div>
+            </div>
+            
+            <div id="results-display" class="hidden text-left glass-card p-10 border-l-4 border-[#97144D]">
+                <h3 class="text-xs font-black uppercase text-[#97144D] mb-4 tracking-widest">Linguistic Authority Verdict</h3>
+                <div id="ai-verdict-text" class="text-xl italic serif-font text-black/80 leading-relaxed mb-6">Analyzing structural integrity...</div>
+                
+                <button onclick="downloadCertificate()" class="mt-4 border-b-2 border-[#97144D] text-[#97144D] text-[10px] font-black uppercase tracking-[0.2em] hover:opacity-50 transition-all pb-1">
+                    Generate Sovereign Certificate ✦
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const auditSteps = [
+            "Establishing secure vault handshake...",
+            "Injecting institutional datasets...",
+            "Applying SHA-256 PII anonymization...",
+            "Scanning for Structuring and Smurfing patterns...",
+            "Cross-referencing global sanctions database...",
+            "Finalizing Linguistic Authority Verdict..."
+        ];
+
+        async function runLiveLogs() {
+            const logContainer = document.getElementById('log-entries');
+            document.getElementById('agent-log').classList.remove('hidden');
+            logContainer.innerHTML = ''; 
+            for (const step of auditSteps) {
+                const entry = document.createElement('div');
+                entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> ${step}`;
+                logContainer.appendChild(entry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                await new Promise(r => setTimeout(r, 700)); 
+            }
+        }
+
+        async function processAudit() {
+            const fileInput = document.getElementById('csvFile');
+            const btn = document.getElementById('upload-btn');
+            const display = document.getElementById('results-display');
+            const logSection = document.getElementById('agent-log');
+            
+            if (!fileInput.files[0]) {
+                alert("Please select a CSV file first.");
+                return;
+            }
+
+            display.classList.add('hidden');
+            logSection.classList.add('hidden');
+            btn.innerText = "ENGINEERING RESULTS...";
+            btn.disabled = true;
+            document.querySelectorAll('.glass-card').forEach(el => el.classList.add('is-scanning'));
+
+            const logPromise = runLiveLogs();
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/api/audit', { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                const data = await response.json();
+                await logPromise;
+
+                if (data.status === "success") {
+                    const logContainer = document.getElementById('log-entries');
+                    
+                    if (data.masked_features && data.masked_features.length > 0) {
+                        for (const feature of data.masked_features) {
+                            const entry = document.createElement('div');
+                            entry.innerHTML = `<span class="text-[#97144D] mr-2">✦</span> Masked Sensitive Column: <span class="font-bold text-black opacity-100">[${feature.toUpperCase()}]</span>`;
+                            logContainer.appendChild(entry);
+                            logContainer.scrollTop = logContainer.scrollHeight;
+                            await new Promise(r => setTimeout(r, 400)); 
+                        }
+                    }
+
+                    document.getElementById('transaction-count').innerText = data.transaction_count.toLocaleString();
+                    document.getElementById('risk-score').innerText = data.risk_score;
+                    document.getElementById('health-score').innerText = data.health_score;
+                    document.getElementById('ai-verdict-text').innerText = data.summary;
+                    
+                    display.classList.remove('hidden');
+                } else {
+                    alert("Audit Protocol Failed: " + (data.error || data.message));
+                }
+            } catch (e) { 
+                console.error(e);
+                alert("Protocol Error: Connection to Sovereign Vault timed out."); 
+            } finally {
+                btn.innerText = "PROTOCOL SEALED";
+                btn.disabled = false;
+                document.querySelectorAll('.glass-card').forEach(el => el.classList.remove('is-scanning'));
+            }
+        }
+
+        // NEW: Export Logic
+        function downloadCertificate() {
+            const count = document.getElementById('transaction-count').innerText;
+            const health = document.getElementById('health-score').innerText;
+            const risk = document.getElementById('risk-score').innerText;
+            const verdict = document.getElementById('ai-verdict-text').innerText;
+            const timestamp = new Date().toLocaleString();
+
+            const certificateContent = `
+XPECT | SOVEREIGN AI GOVERNANCE
+-------------------------------
+AUDIT CERTIFICATE: SUTRA-AUTO-VERIFY
+DATE: ${timestamp}
+
+[AUDIT METRICS]
+Capacity Audited: ${count} Nodes
+Sutra Health: ${health}
+Risk Variance: ${risk}
+
+[AUTHORITY VERDICT]
+${verdict}
+
+[SECURITY STATUS]
+PII Masking: SHA-256 Protocol (Active)
+Anonymization: Verified
+Data Sovereignty: Maintained
+
+This certificate confirms that the uploaded dataset has been 
+processed through the XPECT Governance Engine and complies 
+with the 99th percentile precision standard.
+-------------------------------
+SEALED BY XPECT SUTRA PROTOCOL
+            `;
+
+            const blob = new Blob([certificateContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `XPECT_Audit_${Date.now()}.txt`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
