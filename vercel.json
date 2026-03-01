@@ -1,6 +1,23 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/audit", "destination": "api/audit.py" }
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "app.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "index.html"
+    }
   ]
 }
